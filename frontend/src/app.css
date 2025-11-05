@@ -1,2 +1,20 @@
 @import 'tailwindcss';
 @plugin "daisyui";
+
+@layer utilities {
+  .btn-outline {
+    --btn-border: color-mix(in oklab, currentColor 40%, transparent);
+  }
+
+  .btn:focus-visible {
+    outline-color: color-mix(in oklab, currentColor 50%, transparent);
+  }
+
+  input:focus,
+  .input:focus-visible {
+    outline-style: 1px solid;
+    outline-color: color-mix(in oklab, currentColor 50%, transparent);
+    border-color: color-mix(in oklab, currentColor 40%, transparent);
+    outline-offset: 0;
+  }
+}

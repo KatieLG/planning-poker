@@ -17,15 +17,15 @@
     '🧠',
     '🔥',
     '🐸',
-    '🐧',
+    '👑',
     '🐼',
-    '🐝',
-    '🐙',
+    '⭐',
+    '👻',
+    '🤖',
+    '🙀',
     '🌈',
     '🌵',
-    '🍕',
-    '🍩',
-    '🎧',
+    '✈️',
     '🚀',
     '💩'
   ];
@@ -58,7 +58,7 @@
 
         <div class="form-control mb-4">
           <label class="label" for="name">
-            <span class="label-text">Your Name</span>
+            <span class="label-text pr-1">Your Name</span>
           </label>
           <input
             id="name"
@@ -72,7 +72,7 @@
 
         <div class="form-control mb-6">
           <label class="label" for="icon-select">
-            <span class="label-text">Choose Your Icon</span>
+            <span class="label-text pb-1">Choose Your Icon</span>
           </label>
           <div class="grid grid-cols-6 gap-2" id="icon-select" role="radiogroup">
             {#each icons as icon}
