@@ -94,7 +94,7 @@
           Join Room
         </button>
 
-        <button class="btn btn-ghost btn-sm mt-2" on:click={() => goto(resolve('/'))}>
+        <button class="btn btn-ghost btn-sm mt-2" on:click={() => goto(resolve('/', {}))}>
           Back to Home
         </button>
       </div>
