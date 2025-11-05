@@ -1,5 +1,6 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
+  import { resolve } from '$app/paths';
   import { page } from '$app/state';
 
   const roomId = page.params.roomId;
@@ -75,7 +76,7 @@
             <span class="label-text pb-1">Choose Your Icon</span>
           </label>
           <div class="grid grid-cols-6 gap-2" id="icon-select" role="radiogroup">
-            {#each icons as icon}
+            {#each icons as icon (icon)}
               <button
                 class="btn btn-lg {selectedIcon === icon ? 'btn-primary' : 'btn-outline'}"
                 on:click={() => (selectedIcon = icon)}
@@ -93,7 +94,9 @@
           Join Room
         </button>
 
-        <button class="btn btn-ghost btn-sm mt-2" on:click={() => goto('/')}> Back to Home </button>
+        <button class="btn btn-ghost btn-sm mt-2" on:click={() => goto(resolve('/'))}>
+          Back to Home
+        </button>
       </div>
     </div>
   </div>
