@@ -9,4 +9,6 @@
   <link rel="icon" href={favicon} />
 </svelte:head>
 
-{@render children()}
+<div class="min-h-screen bg-base-200">
+  {@render children()}
+</div>
