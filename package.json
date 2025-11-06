@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "concurrently -k -n backend,frontend -c blue,green \"npm:dev --workspace=backend\" \"npm:dev --workspace=frontend\"",
+    "lint": "concurrently -k -n backend,frontend -c blue,green \"npm:lint --workspace=backend\" \"npm:lint --workspace=frontend\"",
+    "format": "concurrently -k -n backend,frontend -c blue,green \"npm:format --workspace=backend\" \"npm:format --workspace=frontend\""
   },
   "keywords": [],
   "author": "",
@@ -15,5 +17,8 @@
     "frontend",
     "backend",
     "shared"
-  ]
+  ],
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
 }
