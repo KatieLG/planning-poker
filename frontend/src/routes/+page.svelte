@@ -1,8 +1,11 @@
 <script lang="ts">
+  import { sendMessage } from '$lib/socket';
+  import { onMount } from 'svelte';
   let joinRoomId = '';
 
   const createRoom = () => {
     // TODO: create a room and join
+    sendMessage('create_room');
     console.log('Creating room...');
   };
 
