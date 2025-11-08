@@ -5,9 +5,9 @@
 
   const roomId = page.params.roomId;
 
-  let name = '';
-  let selectedIcon = '🤠';
-  let error = '';
+  let name = $state('');
+  let selectedIcon = $state('');
+  let error = $state('');
   let isLoading = false;
 
   const icons = [
@@ -31,9 +31,13 @@
     '💩'
   ];
 
+  $effect(() => {
+    if (name.trim() && selectedIcon && error) error = '';
+  });
+
   const join = () => {
-    if (!name.trim()) {
-      error = 'Please enter your name';
+    if (!name.trim() || !selectedIcon) {
+      error = 'Please enter your name and select an icon.';
       return;
     }
     console.log(`Joining room ${roomId} as ${name} with icon ${selectedIcon}`);
@@ -67,7 +71,7 @@
             placeholder="Enter your name"
             class="input input-bordered"
             bind:value={name}
-            on:keypress={(e) => e.key === 'Enter' && join()}
+            onkeypress={(e) => e.key === 'Enter' && join()}
           />
         </div>
 
@@ -79,7 +83,7 @@
             {#each icons as icon (icon)}
               <button
                 class="btn btn-lg {selectedIcon === icon ? 'btn-primary' : 'btn-outline'}"
-                on:click={() => (selectedIcon = icon)}
+                onclick={() => (selectedIcon = icon)}
               >
                 {icon}
               </button>
@@ -87,14 +91,14 @@
           </div>
         </div>
 
-        <button class="btn btn-primary btn-block" on:click={join} disabled={isLoading}>
+        <button class="btn btn-primary btn-block" onclick={join} disabled={isLoading}>
           {#if isLoading}
             <span class="loading loading-spinner"></span>
           {/if}
           Join Room
         </button>
 
-        <button class="btn btn-ghost btn-sm mt-2" on:click={() => goto(resolve('/', {}))}>
+        <button class="btn btn-ghost btn-sm mt-2" onclick={() => goto(resolve('/', {}))}>
           Back to Home
         </button>
       </div>

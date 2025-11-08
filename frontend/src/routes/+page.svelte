@@ -28,7 +28,7 @@
         <div class="card-body">
           <h2 class="card-title justify-center mb-4">Get Started</h2>
 
-          <button class="btn btn-primary btn-lg mb-4" on:click={createRoom}>
+          <button class="btn btn-primary btn-lg mb-4" onclick={createRoom}>
             Create New Room
           </button>
 
@@ -45,9 +45,9 @@
                 placeholder="Room ID"
                 class="input input-bordered join-item flex-1"
                 bind:value={joinRoomId}
-                on:keypress={(e) => e.key === 'Enter' && joinRoom()}
+                onkeypress={(e) => e.key === 'Enter' && joinRoom()}
               />
-              <button class="btn btn-secondary join-item" on:click={joinRoom}> Join </button>
+              <button class="btn btn-secondary join-item" onclick={joinRoom}> Join </button>
             </div>
           </div>
         </div>
