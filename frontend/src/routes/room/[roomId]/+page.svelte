@@ -2,7 +2,7 @@
   import { page } from '$app/state';
   import { browser } from '$app/environment';
   import { currentRoom } from '$lib/stores.svelte';
-  import { getRoom, vote } from '$lib/client';
+  import { getRoom, vote, revealCards, resetRoom } from '$lib/client';
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { resolve } from '$app/paths';
@@ -11,8 +11,6 @@
   const userId = browser ? localStorage.getItem('userId') : null;
 
   let error = '';
-  let countdown = 0;
-  let isRevealing = false;
 
   const cardOptions = [0, 1, 2, 3, 5, 8, 13, 21, null];
 
@@ -72,15 +70,6 @@
       </div>
     {/if}
 
-    <!-- Countdown Overlay -->
-    {#if isRevealing && countdown > 0}
-      <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div class="text-9xl font-bold text-white animate-pulse">
-          {countdown}
-        </div>
-      </div>
-    {/if}
-
     <!-- Players Grid -->
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
       {#each room.users as user}
@@ -119,7 +108,7 @@
       <div class="alert alert-success mb-6">
         <div class="flex-1">
           <div class="text-center w-full">
-            <span class="font-bold text-lg">Average: TODO</span>
+            <span class="font-bold text-lg">Average: {average}</span>
           </div>
         </div>
       </div>
@@ -153,14 +142,11 @@
           <h2 class="card-title justify-center">Host Controls</h2>
           <div class="flex gap-4 justify-center">
             {#if !room.revealed}
-              <button class="btn btn-primary btn-lg" disabled={isRevealing}>
-                {#if isRevealing}
-                  <span class="loading loading-spinner"></span>
-                {/if}
+              <button class="btn btn-primary btn-lg" onclick={revealCards}>
                 🎭 Reveal Cards
               </button>
             {:else}
-              <button class="btn btn-secondary btn-lg"> 🔄 New Round </button>
+              <button class="btn btn-secondary btn-lg" onclick={resetRoom}> 🔄 New Round </button>
             {/if}
           </div>
         </div>

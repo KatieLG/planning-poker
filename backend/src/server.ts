@@ -3,7 +3,15 @@ import { Server, Socket } from 'socket.io';
 import { createServer } from 'node:http';
 import { JoinRoomParams, SocketEvent } from 'shared';
 import cors from 'cors';
-import { createRoom, joinRoom, getRoom, leaveRoom, userVote } from './roomService.js';
+import {
+  createRoom,
+  joinRoom,
+  getRoom,
+  leaveRoom,
+  userVote,
+  revealCards,
+  resetRoom
+} from './roomService.js';
 
 const app = express();
 const server = createServer(app);
@@ -71,6 +79,28 @@ io.on('connection', (socket: Socket) => {
       io.to(room.id).emit(SocketEvent.ROOM_UPDATE, room);
     } else {
       socket.emit(SocketEvent.ERROR, { message: 'User or room not found' });
+    }
+  });
+
+  socket.on(SocketEvent.REVEAL_CARDS, () => {
+    console.log('revealing cards for socket:', socket.id);
+
+    let room = revealCards(socket.id);
+    if (room) {
+      io.to(room.id).emit(SocketEvent.ROOM_UPDATE, room);
+    } else {
+      socket.emit(SocketEvent.ERROR, { message: 'Could not reveal cards' });
+    }
+  });
+
+  socket.on(SocketEvent.RESET_ROOM, () => {
+    console.log('resetting room for socket:', socket.id);
+
+    let room = resetRoom(socket.id);
+    if (room) {
+      io.to(room.id).emit(SocketEvent.ROOM_UPDATE, room);
+    } else {
+      socket.emit(SocketEvent.ERROR, { message: 'Could not reset room' });
     }
   });
 });

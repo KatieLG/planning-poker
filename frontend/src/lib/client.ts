@@ -59,6 +59,13 @@ export function joinRoom(params: JoinRoomParams) {
 }
 
 export function vote(cardValue: number | null) {
-  console.log('voting with value:', cardValue);
   socket?.emit(SocketEvent.VOTE, cardValue);
+}
+
+export function revealCards() {
+  socket?.emit(SocketEvent.REVEAL_CARDS);
+}
+
+export function resetRoom() {
+  socket?.emit(SocketEvent.RESET_ROOM);
 }
