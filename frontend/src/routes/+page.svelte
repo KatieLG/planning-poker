@@ -1,12 +1,6 @@
 <script lang="ts">
-  import { sendMessage } from '$lib/socket';
+  import { createRoom } from '$lib/socket';
   let joinRoomId = '';
-
-  const createRoom = () => {
-    // TODO: create a room and join
-    sendMessage('create_room');
-    console.log('Creating room...');
-  };
 
   const joinRoom = () => {
     // TODO: join existing room

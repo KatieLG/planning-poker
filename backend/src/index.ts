@@ -1,7 +1,9 @@
 import express from 'express';
 import { Server, Socket } from 'socket.io';
 import { createServer } from 'node:http';
+import { SocketEvent } from 'shared';
 import cors from 'cors';
+import { createRoom } from './roomService.js';
 
 const app = express();
 const server = createServer(app);
@@ -13,10 +15,6 @@ const io = new Server(server, {
   }
 });
 
-app.get('/', (req, res) => {
-  res.send('<h1>Planning Poker Backend is running</h1>');
-});
-
 io.on('connection', (socket: Socket) => {
   console.log('a user connected');
 
@@ -24,9 +22,10 @@ io.on('connection', (socket: Socket) => {
     console.log('user disconnected');
   });
 
-  socket.on('message', (message: string) => {
-    console.log('message received:', message);
-    io.emit('message', message);
+  socket.on(SocketEvent.CREATE_ROOM, (hostId: string) => {
+    console.log('creating room for host:', hostId);
+    let room = createRoom(hostId);
+    io.emit(SocketEvent.CREATE_ROOM, room);
   });
 });
 
