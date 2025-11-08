@@ -1,0 +1,9 @@
+node_modules
+dist
+.svelte-kit
+.vscode
+coverage
+frontend/build
+backend/dist
+shared/dist
+.DS_Store

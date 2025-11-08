@@ -1,6 +1,5 @@
 <script lang="ts">
   import { sendMessage } from '$lib/socket';
-  import { onMount } from 'svelte';
   let joinRoomId = '';
 
   const createRoom = () => {

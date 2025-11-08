@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "concurrently -k -n backend,frontend -c blue,green \"npm:dev --workspace=backend\" \"npm:dev --workspace=frontend\"",
-    "lint": "concurrently -k -n backend,frontend -c blue,green \"npm:lint --workspace=backend\" \"npm:lint --workspace=frontend\"",
-    "format": "concurrently -k -n backend,frontend -c blue,green \"npm:format --workspace=backend\" \"npm:format --workspace=frontend\""
+  "dev": "concurrently -k -n backend,frontend -c blue,green \"npm:dev --workspace=backend\" \"npm:dev --workspace=frontend\"",
+  "lint": "concurrently -k -n backend,frontend,shared -c blue,green,yellow \"npm:lint --workspace=backend\" \"npm:lint --workspace=frontend\" \"npm:lint --workspace=shared\"",
+  "format": "concurrently -k -n backend,frontend,shared -c blue,green,yellow \"npm:format --workspace=backend\" \"npm:format --workspace=frontend\" \"npm:format --workspace=shared\""
   },
   "keywords": [],
   "author": "",
@@ -19,6 +19,8 @@
     "shared"
   ],
   "devDependencies": {
-    "concurrently": "^9.2.1"
+    "concurrently": "^9.2.1",
+    "prettier": "^3.6.2",
+    "prettier-plugin-svelte": "^3.4.0"
   }
 }

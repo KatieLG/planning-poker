@@ -12,7 +12,9 @@
     }
   },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "format": "prettier --write .",
+    "lint": "prettier --check ."
   },
   "keywords": [],
   "type": "module",
