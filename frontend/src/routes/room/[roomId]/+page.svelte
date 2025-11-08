@@ -1,10 +1,9 @@
 <script lang="ts">
   import { page } from '$app/state';
   import { browser } from '$app/environment';
-  import { currentRoom } from '$lib/stores';
-  import { getRoom } from '$lib/client';
+  import { currentRoom } from '$lib/stores.svelte';
+  import { getRoom, vote } from '$lib/client';
   import { onMount } from 'svelte';
-  import type { Room } from 'shared';
   import { goto } from '$app/navigation';
   import { resolve } from '$app/paths';
 
@@ -14,11 +13,23 @@
   let error = '';
   let countdown = 0;
   let isRevealing = false;
-  let average: number | null = null;
-  let room: Room | null = null;
 
-  $: room = $currentRoom;
-  $: isHost = room?.hostId === userId;
+  const cardOptions = [0, 1, 2, 3, 5, 8, 13, 21, null];
+
+  let average: number | null = $state(null);
+  let room = $derived(currentRoom.value);
+  let isHost = $derived(room?.hostId === userId);
+
+  $effect(() => {
+    if (room?.revealed) {
+      const votes = room.users.map((u) => u.cardValue).filter((v) => v !== null && v !== undefined);
+      if (votes.length) {
+        average = votes.reduce((sum, v) => sum + v, 0) / votes.length;
+      }
+    } else {
+      average = null;
+    }
+  });
 
   onMount(() => {
     // redirect to join if no userid, otherwise fetch room data on load
@@ -28,7 +39,13 @@
     getRoom(roomId);
   });
 
-  const cardOptions = [0, 1, 2, 3, 5, 8, 13, 21, 'N/A'];
+  const copyRoomLink = () => {
+    if (browser) {
+      const joinLink = `${window.location.origin}/join/${roomId}`;
+      navigator.clipboard.writeText(joinLink);
+      alert('Join link copied to clipboard!');
+    }
+  };
 </script>
 
 <svelte:head>
@@ -44,7 +61,7 @@
         <div class="badge badge-primary ml-2">Room: {roomId}</div>
       </div>
       <div class="flex-none gap-2">
-        <button class="btn btn-outline btn-sm"> 📋 Copy Join Link </button>
+        <button class="btn btn-outline btn-sm" onclick={copyRoomLink}> 📋 Copy Join Link </button>
         <button class="btn btn-ghost btn-sm"> Leave </button>
       </div>
     </div>
@@ -67,7 +84,8 @@
     <!-- Players Grid -->
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
       {#each room.users as user}
-        <div class="card bg-base-100 shadow-xl">
+        {@const isCurrentUser = user.id === userId}
+        <div class="card bg-base-100 shadow-xl {isCurrentUser ? 'border-2 border-primary' : ''}">
           <div class="card-body items-center text-center p-4">
             <div class="text-4xl mb-2">{user.icon}</div>
             <h3 class="card-title text-sm">
@@ -79,7 +97,7 @@
 
             <!-- Card Display -->
             <div class="mt-2">
-              {#if user?.cardValue}
+              {#if user?.cardValue !== undefined}
                 {#if room.revealed}
                   <div class="text-4xl font-bold text-primary">
                     {user.cardValue}
@@ -116,8 +134,11 @@
             {#each cardOptions as value}
               {@const user = room.users.find((u) => u.id === userId)}
               {@const isSelected = user?.cardValue === value}
-              <button class="btn btn-lg {isSelected ? 'btn-primary' : 'btn-outline'} w-16 h-20">
-                <span class="text-2xl">{value === null ? '?' : value}</span>
+              <button
+                class="btn btn-lg {isSelected ? 'btn-primary' : 'btn-outline'} w-16 h-20"
+                onclick={() => vote(value)}
+              >
+                <span class="text-2xl">{value}</span>
               </button>
             {/each}
           </div>

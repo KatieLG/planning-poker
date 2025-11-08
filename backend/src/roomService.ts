@@ -54,14 +54,28 @@ export const joinRoom = (
   return { room: room, userId: userId };
 };
 
-export const leaveRoom = (socketId: string, userId: string): Room | null => {
+export const leaveRoom = (socketId: string): Room | null => {
   const link = socketMap.get(socketId);
   if (!link) return null;
 
   const room = rooms.get(link.roomId);
   if (!room) return null;
 
-  room.users = room.users.filter((user) => user.id !== userId);
+  room.users = room.users.filter((user) => user.id !== link.userId);
   socketMap.delete(socketId);
+  return room;
+};
+
+export const userVote = (socketId: string, cardValue: number | null): Room | null => {
+  const link = socketMap.get(socketId);
+  if (!link) return null;
+
+  const room = rooms.get(link.roomId);
+  if (!room) return null;
+
+  const roomUser = room.users.find((u) => u.id === link.userId);
+  if (!roomUser) return null;
+
+  roomUser.cardValue = cardValue;
   return room;
 };

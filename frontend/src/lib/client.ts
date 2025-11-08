@@ -4,7 +4,7 @@ import { resolve } from '$app/paths';
 import { SocketEvent } from 'shared';
 import type { JoinRoomParams, JoinRoomResponse, Room } from 'shared';
 import { io, Socket } from 'socket.io-client';
-import { currentRoom } from './stores';
+import { currentRoom } from './stores.svelte';
 
 const URL = 'http://localhost:3000';
 
@@ -51,9 +51,14 @@ export function createRoom() {
 }
 
 export function getRoom(roomId: string) {
-  socket?.emit(SocketEvent.GET_ROOM, { roomId });
+  socket?.emit(SocketEvent.GET_ROOM, roomId);
 }
 
 export function joinRoom(params: JoinRoomParams) {
   socket?.emit(SocketEvent.JOIN_ROOM, params);
+}
+
+export function vote(cardValue: number | null) {
+  console.log('voting with value:', cardValue);
+  socket?.emit(SocketEvent.VOTE, cardValue);
 }
