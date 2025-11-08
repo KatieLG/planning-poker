@@ -5,6 +5,8 @@
   import { getRoom } from '$lib/client';
   import { onMount } from 'svelte';
   import type { Room } from 'shared';
+  import { goto } from '$app/navigation';
+  import { resolve } from '$app/paths';
 
   const roomId = page.params.roomId;
   const userId = browser ? localStorage.getItem('userId') : null;
@@ -18,13 +20,11 @@
   $: room = $currentRoom;
   $: isHost = room?.hostId === userId;
 
-  // if (!userId) {
-  //   // if no userId, redirect to join page
-  //   window.location.href = resolve(`/join/${roomId}`, {});
-  // }
-
   onMount(() => {
-    // Fetch room data when component mounts
+    // redirect to join if no userid, otherwise fetch room data on load
+    if (!userId) {
+      goto(resolve(`/join/${roomId}`, {}));
+    }
     getRoom(roomId);
   });
 

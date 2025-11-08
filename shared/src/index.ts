@@ -18,6 +18,17 @@ export type RoomUserLink = {
   userId: string;
 };
 
+export type JoinRoomParams = {
+  roomId: string;
+  name: string;
+  icon?: string;
+};
+
+export type JoinRoomResponse = {
+  room: Room;
+  userId: string;
+};
+
 export const SocketEvent = {
   CREATE_ROOM: 'create_room',
   JOIN_ROOM: 'join_room',

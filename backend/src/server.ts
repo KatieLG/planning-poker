@@ -38,6 +38,7 @@ io.on('connection', (socket: Socket) => {
     if (response) {
       let { room, userId } = response;
       socket.emit(SocketEvent.JOIN_ROOM, { room: room, userId: userId });
+      socket.join(room.id);
       io.to(room.id).emit(SocketEvent.ROOM_UPDATE, room);
     } else {
       socket.emit(SocketEvent.ERROR, { message: 'Room not found' });
@@ -49,6 +50,7 @@ io.on('connection', (socket: Socket) => {
 
     let room = getRoom(data.roomId);
     if (room) {
+      socket.join(room.id);
       socket.emit(SocketEvent.GET_ROOM, room);
     } else {
       socket.emit(SocketEvent.ERROR, { message: 'Room not found' });

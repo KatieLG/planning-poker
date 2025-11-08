@@ -2,7 +2,7 @@ import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { resolve } from '$app/paths';
 import { SocketEvent } from 'shared';
-import type { Room } from 'shared';
+import type { JoinRoomParams, JoinRoomResponse, Room } from 'shared';
 import { io, Socket } from 'socket.io-client';
 import { currentRoom } from './stores';
 
@@ -32,12 +32,17 @@ if (socket) {
     currentRoom.set(room);
   });
 
-  socket.on(SocketEvent.JOIN_ROOM, (data: { room: Room; userId: string }) => {
+  socket.on(SocketEvent.JOIN_ROOM, (data: JoinRoomResponse) => {
     console.log('Joined room:', data.room);
     localStorage.setItem('roomId', data.room.id);
     localStorage.setItem('userId', data.userId);
     currentRoom.set(data.room);
     goto(resolve(`/room/${data.room.id}`, {}));
+  });
+
+  socket.on(SocketEvent.ROOM_UPDATE, (room: Room) => {
+    console.log('Room updated:', room);
+    currentRoom.set(room);
   });
 }
 
@@ -49,6 +54,6 @@ export function getRoom(roomId: string) {
   socket?.emit(SocketEvent.GET_ROOM, { roomId });
 }
 
-export function joinRoom({ roomId, name, icon }: { roomId: string; name: string; icon?: string }) {
-  socket?.emit(SocketEvent.JOIN_ROOM, { roomId, name, icon });
+export function joinRoom(params: JoinRoomParams) {
+  socket?.emit(SocketEvent.JOIN_ROOM, params);
 }
