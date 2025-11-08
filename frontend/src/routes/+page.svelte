@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { createRoom } from '$lib/socket';
+  import { createRoom } from '$lib/client';
   let joinRoomId = '';
 
   const joinRoom = () => {

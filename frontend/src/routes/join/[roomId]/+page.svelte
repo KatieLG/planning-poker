@@ -2,6 +2,7 @@
   import { goto } from '$app/navigation';
   import { resolve } from '$app/paths';
   import { page } from '$app/state';
+  import { joinRoom } from '$lib/client';
 
   const roomId = page.params.roomId;
 
@@ -41,6 +42,7 @@
       return;
     }
     console.log(`Joining room ${roomId} as ${name} with icon ${selectedIcon}`);
+    joinRoom({ roomId, name: name.trim(), icon: selectedIcon });
   };
 </script>
 
