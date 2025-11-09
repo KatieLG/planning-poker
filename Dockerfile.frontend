@@ -30,9 +30,9 @@ COPY frontend/ ./
 
 # Build the frontend with environment variables
 ARG VITE_ALLOWED_HOSTS
-ARG BACKEND_URL
+ARG VITE_BACKEND_URL
 ENV VITE_ALLOWED_HOSTS=${VITE_ALLOWED_HOSTS:-'localhost,127.0.0.1,0.0.0.0'}
-ENV BACKEND_URL=${BACKEND_URL:-'http://localhost:3000'}
+ENV VITE_BACKEND_URL=${VITE_BACKEND_URL:-'http://localhost:3000'}
 RUN npm run build
 
 # Expose the preview port (default is 4173 for Vite preview)
