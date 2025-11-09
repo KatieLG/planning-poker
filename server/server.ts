@@ -2,7 +2,6 @@ import express from 'express';
 import { Server, Socket } from 'socket.io';
 import { createServer } from 'node:http';
 import { type JoinRoomParams, SocketEvent, type Room } from '../shared/types';
-import cors from 'cors';
 import {
   createRoom,
   joinRoom,
@@ -16,15 +15,9 @@ import { handler } from '../build/handler.js';
 const app = express();
 const server = createServer(app);
 const port = process.env.PORT || 3000;
-const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
-app.use(handler);
+const io = new Server(server);
 
-app.use(cors());
-const io = new Server(server, {
-  cors: {
-    origin: frontendUrl
-  }
-});
+app.use(handler);
 
 const handleEvent = (socket: Socket, handler: () => void) => {
   try {
