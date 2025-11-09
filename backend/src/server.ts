@@ -14,11 +14,13 @@ import {
 
 const app = express();
 const server = createServer(app);
+const port = process.env.PORT || 3000;
+const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:4173';
 
 app.use(cors());
 const io = new Server(server, {
   cors: {
-    origin: '*'
+    origin: frontendUrl,
   }
 });
 
@@ -100,6 +102,6 @@ io.on('connection', (socket: Socket) => {
   });
 });
 
-server.listen(3000, () => {
-  console.log('Server is running on http://localhost:3000');
+server.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });

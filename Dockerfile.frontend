@@ -1,0 +1,42 @@
+# Stage 1: Build shared package
+FROM node:22-alpine as shared
+WORKDIR /app
+COPY shared/package*.json ./shared/
+COPY package*.json ./
+# Install TypeScript globally for the build
+RUN npm install -g typescript
+# Install all dependencies including devDependencies for the shared package
+RUN npm install --workspace=shared --include=dev
+COPY shared/ ./shared/
+WORKDIR /app/shared
+RUN npm run build
+
+# Stage 2: Build frontend
+FROM node:22-alpine
+WORKDIR /app
+
+# Copy package files
+COPY --from=shared /app/package*.json ./
+COPY --from=shared /app/node_modules ./node_modules
+COPY --from=shared /app/shared ./shared
+COPY frontend/package*.json ./frontend/
+
+# Install frontend dependencies
+WORKDIR /app/frontend
+RUN npm install
+
+# Copy frontend source
+COPY frontend/ ./
+
+# Build the frontend with environment variables
+ARG VITE_ALLOWED_HOSTS
+ARG BACKEND_URL
+ENV VITE_ALLOWED_HOSTS=${VITE_ALLOWED_HOSTS:-'localhost,127.0.0.1,0.0.0.0'}
+ENV BACKEND_URL=${BACKEND_URL:-'http://localhost:3000'}
+RUN npm run build
+
+# Expose the preview port (default is 4173 for Vite preview)
+EXPOSE 4173
+
+# Start the preview server
+CMD ["npm", "run", "preview", "--", "--host"]

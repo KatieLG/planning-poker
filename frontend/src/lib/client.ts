@@ -7,7 +7,7 @@ import { io, Socket } from 'socket.io-client';
 import { appState } from './stores.svelte';
 import { pubsub } from './pubsub';
 
-const URL = 'http://localhost:3000';
+const URL = process.env.BACKEND_URL || 'http://localhost:3000';
 
 const socket: Socket | null = browser ? io(URL) : null;
 
