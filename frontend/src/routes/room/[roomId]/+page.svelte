@@ -1,22 +1,28 @@
 <script lang="ts">
   import { page } from '$app/state';
   import { browser } from '$app/environment';
-  import { currentRoom } from '$lib/stores.svelte';
+  import { appState } from '$lib/stores.svelte';
   import { getRoom, vote, revealCards, resetRoom } from '$lib/client';
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { resolve } from '$app/paths';
+  import { pubsub } from '$lib/pubsub';
 
   const roomId = page.params.roomId;
   const userId = browser ? localStorage.getItem('userId') : null;
 
-  let error = '';
-
   const cardOptions = [0, 1, 2, 3, 5, 8, 13, 21, null];
 
   let average: number | null = $state(null);
-  let room = $derived(currentRoom.value);
+  let error = $state<string | null>(null);
+  let room = $derived(appState.currentRoom);
   let isHost = $derived(room?.hostId === userId);
+
+  $effect(() => {
+    return pubsub.on('error', (message: string | null) => {
+      if (message) error = message;
+    });
+  });
 
   $effect(() => {
     if (room?.revealed) {

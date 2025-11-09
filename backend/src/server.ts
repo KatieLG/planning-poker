@@ -27,6 +27,7 @@ const handleEvent = (socket: Socket, handler: () => void) => {
   try {
     handler();
   } catch (error: unknown) {
+    console.error('Error handling event for socket', socket.id, error);
     let errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
     socket.emit(SocketEvent.ERROR, { message: errorMessage });
   }

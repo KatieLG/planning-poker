@@ -3,12 +3,14 @@
   import { resolve } from '$app/paths';
   import { page } from '$app/state';
   import { joinRoom } from '$lib/client';
+  import { pubsub } from '$lib/pubsub';
+  import { appState } from '$lib/stores.svelte';
 
   const roomId = page.params.roomId;
 
   let name = $state('');
   let selectedIcon = $state('');
-  let error = $state('');
+  let error = $state<string | null>('');
   let isLoading = false;
 
   const icons = [
@@ -33,7 +35,13 @@
   ];
 
   $effect(() => {
-    if (name.trim() && selectedIcon && error) error = '';
+    if (name.trim() && selectedIcon) error = '';
+  });
+
+  $effect(() => {
+    return pubsub.on('error', (message: string | null) => {
+      if (message) error = message;
+    });
   });
 
   const join = () => {
