@@ -12,6 +12,7 @@
   const userId = browser ? localStorage.getItem('userId') : null;
 
   const cardOptions = [0, 1, 2, 3, 5, 8, 13, 21, null];
+  const nullCardIcon = '🦞';
 
   let average: number | null = $state(null);
   let error = $state<string | null>(null);
@@ -95,7 +96,7 @@
               {#if user?.cardValue !== undefined}
                 {#if room.revealed}
                   <div class="text-4xl font-bold text-primary">
-                    {user.cardValue}
+                    {user.cardValue !== null ? user.cardValue : nullCardIcon}
                   </div>
                 {:else}
                   <div class="text-4xl">🃏</div>
@@ -135,7 +136,7 @@
                 class="btn btn-lg {isSelected ? 'btn-primary' : 'btn-outline'} w-16 h-20"
                 onclick={() => vote(value)}
               >
-                <span class="text-2xl">{value}</span>
+                <span class="text-2xl">{value !== null ? value : nullCardIcon}</span>
               </button>
             {/each}
           </div>
