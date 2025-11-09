@@ -1,7 +1,7 @@
 import express from 'express';
 import { Server, Socket } from 'socket.io';
 import { createServer } from 'node:http';
-import { JoinRoomParams, SocketEvent, Room } from 'shared';
+import { type JoinRoomParams, SocketEvent, type Room } from '../shared/types';
 import cors from 'cors';
 import {
   createRoom,
@@ -10,15 +10,19 @@ import {
   userVote,
   revealCards,
   resetRoom
-} from './roomService.js';
+} from '../server/roomService';
+import { handler } from '../build/handler.js';
 
 const app = express();
 const server = createServer(app);
+const port = process.env.PORT || 3000;
+const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+app.use(handler);
 
 app.use(cors());
 const io = new Server(server, {
   cors: {
-    origin: '*'
+    origin: frontendUrl
   }
 });
 
@@ -27,7 +31,7 @@ const handleEvent = (socket: Socket, handler: () => void) => {
     handler();
   } catch (error: unknown) {
     console.error('Error handling event for socket', socket.id, error);
-    let errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
     socket.emit(SocketEvent.ERROR, { message: errorMessage });
   }
 };
@@ -39,7 +43,7 @@ const updateRoom = (room: Room) => {
 const handleLeaveRoom = (socket: Socket) => {
   handleEvent(socket, () => {
     console.log('user disconnecting', socket.id);
-    let { room, disband } = leaveRoom(socket.id);
+    const { room, disband } = leaveRoom(socket.id);
     socket.leave(room.id);
     if (disband) {
       console.log('disbanding room');
@@ -63,7 +67,7 @@ io.on('connection', (socket: Socket) => {
 
   socket.on(SocketEvent.CREATE_ROOM, () => {
     handleEvent(socket, () => {
-      let room = createRoom(socket.id);
+      const room = createRoom(socket.id);
       socket.join(room.id);
       socket.emit(SocketEvent.CREATE_ROOM, room);
     });
@@ -71,7 +75,7 @@ io.on('connection', (socket: Socket) => {
 
   socket.on(SocketEvent.JOIN_ROOM, (params: JoinRoomParams) => {
     handleEvent(socket, () => {
-      let { room, userId } = joinRoom(socket.id, params.roomId, params.name, params.icon);
+      const { room, userId } = joinRoom(socket.id, params.roomId, params.name, params.icon);
       socket.emit(SocketEvent.JOIN_ROOM, { room: room, userId: userId });
       socket.join(room.id);
       updateRoom(room);
@@ -80,26 +84,26 @@ io.on('connection', (socket: Socket) => {
 
   socket.on(SocketEvent.VOTE, (cardValue: number | null) => {
     handleEvent(socket, () => {
-      let room = userVote(socket.id, cardValue);
+      const room = userVote(socket.id, cardValue);
       updateRoom(room);
     });
   });
 
   socket.on(SocketEvent.REVEAL_CARDS, () => {
     handleEvent(socket, () => {
-      let room = revealCards(socket.id);
+      const room = revealCards(socket.id);
       updateRoom(room);
     });
   });
 
   socket.on(SocketEvent.RESET_ROOM, () => {
     handleEvent(socket, () => {
-      let room = resetRoom(socket.id);
+      const room = resetRoom(socket.id);
       updateRoom(room);
     });
   });
 });
 
-server.listen(3000, () => {
-  console.log('Server is running on http://localhost:3000');
+server.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });

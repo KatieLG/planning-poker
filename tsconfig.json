@@ -12,5 +12,5 @@
     "moduleResolution": "bundler",
     "types": ["svelte", "@sveltejs/kit"]
   },
-  "include": ["src", "src/types/daisyui.d.ts"]
+  "include": ["src", "server/*.ts", "src/types/daisyui.d.ts", "shared/*.ts"]
 }

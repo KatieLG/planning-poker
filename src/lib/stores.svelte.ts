@@ -1,4 +1,4 @@
-import type { Room } from 'shared';
+import type { Room } from '../../shared/types';
 
 export type AppState = {
   currentRoom: Room | null;

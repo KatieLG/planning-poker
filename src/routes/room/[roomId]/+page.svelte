@@ -56,7 +56,10 @@
     if (browser) {
       const joinLink = `${window.location.origin}/join/${roomId}`;
       navigator.clipboard.writeText(joinLink);
-      alert('Join link copied to clipboard!');
+      pubsub.emit('toast', {
+        type: 'success',
+        message: 'Join link copied to clipboard!'
+      });
     }
   };
 
@@ -93,7 +96,7 @@
 
     <!-- Players Grid -->
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
-      {#each room.users as user}
+      {#each room.users as user (user.id)}
         {@const isCurrentUser = user.id === userId}
         <div class="card bg-base-100 shadow-xl {isCurrentUser ? 'border-2 border-primary' : ''}">
           <div class="card-body items-center text-center p-4">
@@ -143,7 +146,7 @@
         <div class="card-body">
           <h2 class="card-title justify-center mb-4">Select Your Card</h2>
           <div class="flex flex-wrap justify-center gap-3">
-            {#each cardOptions as value}
+            {#each cardOptions as value (value)}
               {@const user = room.users.find((u) => u.id === userId)}
               {@const isSelected = user?.cardValue === value}
               <button

@@ -1,4 +1,4 @@
-import { Room, User, RoomUserLink } from 'shared';
+import type { Room, User, RoomUserLink } from '../shared/types';
 import { nanoid } from 'nanoid';
 
 const rooms = new Map<string, Room>();
@@ -78,7 +78,7 @@ export const leaveRoom = (socketId: string): { room: Room; disband: boolean } =>
 
   const { room, link } = context;
   room.users = room.users.filter((user) => user.id !== link.userId);
-  let disband = room.hostId == link.userId;
+  const disband = room.hostId == link.userId;
 
   return { room, disband };
 };
