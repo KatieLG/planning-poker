@@ -11,7 +11,6 @@ type RoomContext = {
 };
 
 const getRoomContext = (socketId: string): RoomContext => {
-  console.log(socketMap);
   const link = socketMap.get(socketId);
   if (!link) throw new Error('Connection not associated to a user or room');
 
@@ -74,11 +73,11 @@ export const leaveRoom = (socketId: string): { room: Room; disband: boolean } =>
   const context = getRoomContext(socketId);
   socketMap.delete(socketId);
 
-  console.log('Leaving room for socket:', socketId, context);
-
   const { room, link } = context;
   room.users = room.users.filter((user) => user.id !== link.userId);
   const disband = room.hostId == link.userId;
+
+  if (disband) rooms.delete(room.id);
 
   return { room, disband };
 };

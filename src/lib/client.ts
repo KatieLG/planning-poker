@@ -11,15 +11,12 @@ const socket: Socket | null = browser ? io() : null;
 
 if (socket) {
   socket.on('connect', () => {
-    console.log('Connected to server with id:', socket.id);
   });
 
   socket.on('disconnect', () => {
-    console.log('Disconnected from server');
   });
 
   socket.on(SocketEvent.CREATE_ROOM, (room: Room) => {
-    console.log('Room created:', room);
     localStorage.setItem('roomId', room.id);
     localStorage.setItem('userId', room.hostId);
     appState.currentRoom = room;
@@ -28,7 +25,6 @@ if (socket) {
   });
 
   socket.on(SocketEvent.JOIN_ROOM, (data: JoinRoomResponse) => {
-    console.log('Joined room:', data.room);
     localStorage.setItem('roomId', data.room.id);
     localStorage.setItem('userId', data.userId);
     appState.currentRoom = data.room;
@@ -37,7 +33,6 @@ if (socket) {
   });
 
   socket.on(SocketEvent.ROOM_UPDATE, (room: Room) => {
-    console.log('Room updated:', room);
     appState.currentRoom = room;
   });
 
@@ -45,7 +40,6 @@ if (socket) {
     appState.currentRoom = null;
     appState.currentUserId = null;
     localStorage.clear();
-    console.log('room disbanded');
     pubsub.emit('toast', {
       type: 'info',
       message: 'The room has been disbanded by the host'
@@ -54,7 +48,6 @@ if (socket) {
   });
 
   socket.on(SocketEvent.ERROR, (error: { message: string | null }) => {
-    console.error('Error from server:', error);
     pubsub.emit('error', error.message);
   });
 }

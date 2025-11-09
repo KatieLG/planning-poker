@@ -41,7 +41,6 @@
 
   onMount(() => {
     if (!userId || !room) {
-      console.log('Missing room or user id');
       if (!username || !userIcon) {
         // missing name or icon, so go back to join page
         goto(resolve(`/join/${roomId}`, {}));
