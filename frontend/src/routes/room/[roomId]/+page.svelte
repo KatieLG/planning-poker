@@ -56,7 +56,10 @@
     if (browser) {
       const joinLink = `${window.location.origin}/join/${roomId}`;
       navigator.clipboard.writeText(joinLink);
-      alert('Join link copied to clipboard!');
+      pubsub.emit('toast', {
+        type: 'success',
+        message: 'Join link copied to clipboard!'
+      });
     }
   };
 

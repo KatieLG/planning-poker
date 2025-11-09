@@ -15,12 +15,12 @@ import {
 const app = express();
 const server = createServer(app);
 const port = process.env.PORT || 3000;
-const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:4173';
+const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
 
 app.use(cors());
 const io = new Server(server, {
   cors: {
-    origin: frontendUrl,
+    origin: frontendUrl
   }
 });
 
