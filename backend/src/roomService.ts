@@ -11,6 +11,7 @@ type RoomContext = {
 };
 
 const getRoomContext = (socketId: string): RoomContext => {
+  console.log(socketMap);
   const link = socketMap.get(socketId);
   if (!link) throw new Error('Connection not associated to a user or room');
 
@@ -47,10 +48,6 @@ export const createRoom = (socketId: string): Room => {
   return newRoom;
 };
 
-export const getRoom = (roomId: string): Room | null => {
-  return rooms.get(roomId) || null;
-};
-
 export const joinRoom = (
   socketId: string,
   roomId: string,
@@ -73,15 +70,17 @@ export const joinRoom = (
   return { room, userId };
 };
 
-export const leaveRoom = (socketId: string): Room => {
+export const leaveRoom = (socketId: string): { room: Room; disband: boolean } => {
   const context = getRoomContext(socketId);
+  socketMap.delete(socketId);
 
   console.log('Leaving room for socket:', socketId, context);
 
   const { room, link } = context;
   room.users = room.users.filter((user) => user.id !== link.userId);
-  socketMap.delete(socketId);
-  return room;
+  let disband = room.hostId == link.userId;
+
+  return { room, disband };
 };
 
 export const userVote = (socketId: string, cardValue: number | null): Room => {

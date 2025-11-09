@@ -2,14 +2,16 @@
   import { page } from '$app/state';
   import { browser } from '$app/environment';
   import { appState } from '$lib/stores.svelte';
-  import { getRoom, vote, revealCards, resetRoom } from '$lib/client';
-  import { onMount } from 'svelte';
+  import { vote, revealCards, resetRoom, joinRoom, leaveRoom } from '$lib/client';
   import { goto } from '$app/navigation';
   import { resolve } from '$app/paths';
   import { pubsub } from '$lib/pubsub';
+  import { onMount } from 'svelte';
 
   const roomId = page.params.roomId;
-  const userId = browser ? localStorage.getItem('userId') : null;
+
+  const username = browser ? localStorage.getItem('username') : null;
+  const userIcon = browser ? localStorage.getItem('userIcon') : null;
 
   const cardOptions = [0, 1, 2, 3, 5, 8, 13, 21, null];
   const nullCardIcon = '🦞';
@@ -17,6 +19,7 @@
   let average: number | null = $state(null);
   let error = $state<string | null>(null);
   let room = $derived(appState.currentRoom);
+  let userId = $derived(appState.currentUserId);
   let isHost = $derived(room?.hostId === userId);
 
   $effect(() => {
@@ -37,11 +40,16 @@
   });
 
   onMount(() => {
-    // redirect to join if no userid, otherwise fetch room data on load
-    if (!userId) {
-      goto(resolve(`/join/${roomId}`, {}));
+    if (!userId || !room) {
+      console.log('Missing room or user id');
+      if (!username || !userIcon) {
+        // missing name or icon, so go back to join page
+        goto(resolve(`/join/${roomId}`, {}));
+        return;
+      }
+      // else try to rejoin
+      joinRoom({ roomId: roomId, name: username, icon: userIcon });
     }
-    getRoom(roomId);
   });
 
   const copyRoomLink = () => {
@@ -50,6 +58,12 @@
       navigator.clipboard.writeText(joinLink);
       alert('Join link copied to clipboard!');
     }
+  };
+
+  const leave = () => {
+    localStorage.clear();
+    leaveRoom();
+    goto(resolve('/', {}));
   };
 </script>
 
@@ -62,12 +76,12 @@
     <!-- Header -->
     <div class="navbar bg-base-100 rounded-box shadow-lg mb-6">
       <div class="flex-1">
-        <a href="/" class="btn btn-ghost text-xl">Planning Poker</a>
+        <button class="btn btn-ghost text-xl" onclick={leave}>Planning Poker</button>
         <div class="badge badge-primary ml-2">Room: {roomId}</div>
       </div>
       <div class="flex-none gap-2">
         <button class="btn btn-outline btn-sm" onclick={copyRoomLink}> 📋 Copy Join Link </button>
-        <button class="btn btn-ghost btn-sm"> Leave </button>
+        <button class="btn btn-ghost btn-sm" onclick={leave}> Leave </button>
       </div>
     </div>
 

@@ -25,12 +25,8 @@ if (socket) {
     localStorage.setItem('roomId', room.id);
     localStorage.setItem('userId', room.hostId);
     appState.currentRoom = room;
+    appState.currentUserId = room.hostId;
     goto(resolve(`/room/${room.id}`, {}));
-  });
-
-  socket.on(SocketEvent.GET_ROOM, (room: Room) => {
-    console.log('Room data received:', room);
-    appState.currentRoom = room;
   });
 
   socket.on(SocketEvent.JOIN_ROOM, (data: JoinRoomResponse) => {
@@ -38,12 +34,21 @@ if (socket) {
     localStorage.setItem('roomId', data.room.id);
     localStorage.setItem('userId', data.userId);
     appState.currentRoom = data.room;
+    appState.currentUserId = data.userId;
     goto(resolve(`/room/${data.room.id}`, {}));
   });
 
   socket.on(SocketEvent.ROOM_UPDATE, (room: Room) => {
     console.log('Room updated:', room);
     appState.currentRoom = room;
+  });
+
+  socket.on(SocketEvent.DISBAND_ROOM, () => {
+    appState.currentRoom = null;
+    appState.currentUserId = null;
+    localStorage.clear();
+    console.log('room disbanded');
+    goto(resolve('/', {}));
   });
 
   socket.on(SocketEvent.ERROR, (error: { message: string | null }) => {
@@ -54,10 +59,6 @@ if (socket) {
 
 export function createRoom() {
   socket?.emit(SocketEvent.CREATE_ROOM);
-}
-
-export function getRoom(roomId: string) {
-  socket?.emit(SocketEvent.GET_ROOM, roomId);
 }
 
 export function joinRoom(params: JoinRoomParams) {
@@ -74,4 +75,8 @@ export function revealCards() {
 
 export function resetRoom() {
   socket?.emit(SocketEvent.RESET_ROOM);
+}
+
+export function leaveRoom() {
+  socket?.emit(SocketEvent.LEAVE_ROOM);
 }

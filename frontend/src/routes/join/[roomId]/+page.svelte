@@ -4,7 +4,6 @@
   import { page } from '$app/state';
   import { joinRoom } from '$lib/client';
   import { pubsub } from '$lib/pubsub';
-  import { appState } from '$lib/stores.svelte';
 
   const roomId = page.params.roomId;
 
@@ -49,8 +48,10 @@
       error = 'Please enter your name and select an icon.';
       return;
     }
+    localStorage.setItem('username', name.trim());
+    localStorage.setItem('userIcon', selectedIcon);
     console.log(`Joining room ${roomId} as ${name} with icon ${selectedIcon}`);
-    joinRoom({ roomId, name: name.trim(), icon: selectedIcon });
+    joinRoom({ roomId: roomId, name: name.trim(), icon: selectedIcon });
   };
 </script>
 

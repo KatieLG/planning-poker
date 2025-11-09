@@ -6,7 +6,6 @@ import cors from 'cors';
 import {
   createRoom,
   joinRoom,
-  getRoom,
   leaveRoom,
   userVote,
   revealCards,
@@ -37,18 +36,29 @@ const updateRoom = (room: Room) => {
   io.to(room.id).emit(SocketEvent.ROOM_UPDATE, room);
 };
 
+const handleLeaveRoom = (socket: Socket) => {
+  handleEvent(socket, () => {
+    console.log('user disconnecting', socket.id);
+    let { room, disband } = leaveRoom(socket.id);
+    socket.leave(room.id);
+    if (disband) {
+      console.log('disbanding room');
+      io.to(room.id).emit(SocketEvent.DISBAND_ROOM);
+    } else updateRoom(room);
+  });
+};
+
 io.on('connection', (socket: Socket) => {
   console.log('a user connected', socket.id);
 
   socket.on(SocketEvent.DISCONNECT, () => {
-    // TODO: If you refresh the page at current, you get disconnected and dont reconnect
-    // Also need to handle disbanding room if host leaves
     console.log('Disconnect event for socket', socket.id);
-    handleEvent(socket, () => {
-      console.log('user disconnecting', socket.id);
-      let room = leaveRoom(socket.id);
-      updateRoom(room);
-    });
+    handleLeaveRoom(socket);
+  });
+
+  socket.on(SocketEvent.LEAVE_ROOM, () => {
+    console.log('Leave event for socket', socket.id);
+    handleLeaveRoom(socket);
   });
 
   socket.on(SocketEvent.CREATE_ROOM, () => {
@@ -65,13 +75,6 @@ io.on('connection', (socket: Socket) => {
       socket.emit(SocketEvent.JOIN_ROOM, { room: room, userId: userId });
       socket.join(room.id);
       updateRoom(room);
-    });
-  });
-
-  socket.on(SocketEvent.GET_ROOM, (roomId: string) => {
-    handleEvent(socket, () => {
-      let room = getRoom(roomId);
-      socket.emit(SocketEvent.GET_ROOM, room);
     });
   });
 
