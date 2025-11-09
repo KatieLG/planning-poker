@@ -48,6 +48,10 @@ if (socket) {
     appState.currentUserId = null;
     localStorage.clear();
     console.log('room disbanded');
+    pubsub.emit('toast', { 
+      type: 'info', 
+      message: 'The room has been disbanded by the host' 
+    });
     goto(resolve('/', {}));
   });
 

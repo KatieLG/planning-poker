@@ -1,6 +1,7 @@
 <script lang="ts">
   import favicon from '$lib/assets/favicon.svg';
   import '../app.css';
+  import Toast from '$lib/components/Toast.svelte';
 
   let { children } = $props();
 </script>
@@ -11,4 +12,5 @@
 
 <div class="min-h-screen bg-base-200">
   {@render children()}
+  <Toast />
 </div>
