@@ -10,15 +10,15 @@ type RoomContext = {
   link: RoomUserLink;
 };
 
-const getRoomContext = (socketId: string): RoomContext | null => {
+const getRoomContext = (socketId: string): RoomContext => {
   const link = socketMap.get(socketId);
-  if (!link) return null;
+  if (!link) throw new Error('Connection not associated to a user or room');
 
   const room = rooms.get(link.roomId);
-  if (!room) return null;
+  if (!room) throw new Error('Room not found');
 
   const user = room.users.find((u) => u.id === link.userId);
-  if (!user) return null;
+  if (!user) throw new Error('User not found in room');
 
   return { room, user, link };
 };
@@ -56,9 +56,9 @@ export const joinRoom = (
   roomId: string,
   name: string,
   icon?: string
-): { room: Room; userId: string } | null => {
+): { room: Room; userId: string } => {
   const room = rooms.get(roomId);
-  if (!room) return null;
+  if (!room) throw new Error('Room not found');
 
   const userId = nanoid();
   const user: User = {
@@ -73,9 +73,8 @@ export const joinRoom = (
   return { room, userId };
 };
 
-export const leaveRoom = (socketId: string): Room | null => {
+export const leaveRoom = (socketId: string): Room => {
   const context = getRoomContext(socketId);
-  if (!context) return null;
 
   const { room, link } = context;
   room.users = room.users.filter((user) => user.id !== link.userId);
@@ -83,32 +82,29 @@ export const leaveRoom = (socketId: string): Room | null => {
   return room;
 };
 
-export const userVote = (socketId: string, cardValue: number | null): Room | null => {
+export const userVote = (socketId: string, cardValue: number | null): Room => {
   const context = getRoomContext(socketId);
-  if (!context) return null;
 
   const { user, room } = context;
   user.cardValue = cardValue;
   return room;
 };
 
-export const revealCards = (socketId: string): Room | null => {
+export const revealCards = (socketId: string): Room => {
   const context = getRoomContext(socketId);
-  if (!context) return null;
 
   const { room, user } = context;
-  if (!user.isHost) return null;
+  if (!user.isHost) throw new Error('Only the host can reveal cards');
 
   room.revealed = true;
   return room;
 };
 
-export const resetRoom = (socketId: string): Room | null => {
+export const resetRoom = (socketId: string): Room => {
   const context = getRoomContext(socketId);
-  if (!context) return null;
 
   const { room, user } = context;
-  if (!user.isHost) return null;
+  if (!user.isHost) throw new Error('Only the host can reset the room');
 
   room.revealed = false;
   room.users.forEach((u) => {
