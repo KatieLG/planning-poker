@@ -30,17 +30,17 @@ export type JoinRoomResponse = {
 };
 
 export const SocketEvent = {
-  DISCONNECT: 'DISCONNECT',
-  CREATE_ROOM: 'CREATE_ROOM',
-  JOIN_ROOM: 'JOIN_ROOM',
-  LEAVE_ROOM: 'LEAVE_ROOM',
-  GET_ROOM: 'GET_ROOM',
-  VOTE: 'VOTE',
-  REVEAL_CARDS: 'REVEAL_CARDS',
-  RESET_VOTES: 'RESET_VOTES',
-  ROOM_UPDATE: 'ROOM_UPDATE',
-  RESET_ROOM: 'RESET_ROOM',
-  ERROR: 'ERROR'
+  DISCONNECT: 'disconnect',
+  CREATE_ROOM: 'create_room',
+  JOIN_ROOM: 'join_room',
+  LEAVE_ROOM: 'leave_room',
+  GET_ROOM: 'get_room',
+  VOTE: 'vote',
+  REVEAL_CARDS: 'reveal_cards',
+  RESET_VOTES: 'reset_votes',
+  ROOM_UPDATE: 'room_update',
+  RESET_ROOM: 'reset_room',
+  ERROR: 'error'
 } as const;
 
 export type SocketEvent = keyof typeof SocketEvent;

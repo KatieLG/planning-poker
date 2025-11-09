@@ -43,7 +43,9 @@ io.on('connection', (socket: Socket) => {
   socket.on(SocketEvent.DISCONNECT, () => {
     // TODO: If you refresh the page at current, you get disconnected and dont reconnect
     // Also need to handle disbanding room if host leaves
+    console.log('Disconnect event for socket', socket.id);
     handleEvent(socket, () => {
+      console.log('user disconnecting', socket.id);
       let room = leaveRoom(socket.id);
       updateRoom(room);
     });

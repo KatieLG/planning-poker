@@ -110,11 +110,13 @@
     </div>
 
     <!-- Average Display -->
-    {#if room.revealed && average !== null}
-      <div class="alert alert-success mb-6">
+    {#if room.revealed}
+      <div class="alert {average !== null ? 'alert-success' : 'alert-info'} mb-6">
         <div class="flex-1">
           <div class="text-center w-full">
-            <span class="font-bold text-lg">Average: {average}</span>
+            <span class="font-bold text-lg"
+              >{average !== null ? `Average: ${average}` : 'Nobody voted'}</span
+            >
           </div>
         </div>
       </div>

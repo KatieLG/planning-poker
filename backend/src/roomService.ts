@@ -76,6 +76,8 @@ export const joinRoom = (
 export const leaveRoom = (socketId: string): Room => {
   const context = getRoomContext(socketId);
 
+  console.log('Leaving room for socket:', socketId, context);
+
   const { room, link } = context;
   room.users = room.users.filter((user) => user.id !== link.userId);
   socketMap.delete(socketId);
