@@ -1,6 +1,6 @@
 type PubSubTypes = {
   error: string | null;
-  toast: { type: 'success' | 'error' | 'info' | 'warning'; message: string};
+  toast: { type: 'success' | 'error' | 'info' | 'warning'; message: string };
 };
 
 const listeners = new Map<keyof PubSubTypes, Set<(data: PubSubTypes[keyof PubSubTypes]) => void>>();

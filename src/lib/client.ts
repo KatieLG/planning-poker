@@ -1,11 +1,11 @@
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { resolve } from '$app/paths';
-import { SocketEvent } from 'shared';
-import type { JoinRoomParams, JoinRoomResponse, Room } from 'shared';
+import { SocketEvent } from '../../shared/types';
+import type { JoinRoomParams, JoinRoomResponse, Room } from '../../shared/types';
 import { io, Socket } from 'socket.io-client';
-import { appState } from './stores.svelte';
-import { pubsub } from './pubsub';
+import { appState } from '$lib/stores.svelte';
+import { pubsub } from '$lib/pubsub';
 
 const URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 const socket: Socket | null = browser ? io(URL) : null;
@@ -47,9 +47,9 @@ if (socket) {
     appState.currentUserId = null;
     localStorage.clear();
     console.log('room disbanded');
-    pubsub.emit('toast', { 
-      type: 'info', 
-      message: 'The room has been disbanded by the host' 
+    pubsub.emit('toast', {
+      type: 'info',
+      message: 'The room has been disbanded by the host'
     });
     goto(resolve('/', {}));
   });
