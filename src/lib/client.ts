@@ -2,7 +2,7 @@ import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { resolve } from '$app/paths';
 import { SocketEvent } from '../../shared/types';
-import type { JoinRoomParams, JoinRoomResponse, Room } from '../../shared/types';
+import type { JoinRoomParams, JoinRoomResponse, Room, CreateRoomParams } from '../../shared/types';
 import { io, Socket } from 'socket.io-client';
 import { appState } from '$lib/stores.svelte';
 import { pubsub } from '$lib/pubsub';
@@ -10,11 +10,9 @@ import { pubsub } from '$lib/pubsub';
 const socket: Socket | null = browser ? io() : null;
 
 if (socket) {
-  socket.on('connect', () => {
-  });
+  socket.on('connect', () => {});
 
-  socket.on('disconnect', () => {
-  });
+  socket.on('disconnect', () => {});
 
   socket.on(SocketEvent.CREATE_ROOM, (room: Room) => {
     localStorage.setItem('roomId', room.id);
@@ -52,8 +50,8 @@ if (socket) {
   });
 }
 
-export function createRoom() {
-  socket?.emit(SocketEvent.CREATE_ROOM);
+export function createRoom(params: CreateRoomParams) {
+  socket?.emit(SocketEvent.CREATE_ROOM, params);
 }
 
 export function joinRoom(params: JoinRoomParams) {
