@@ -3,7 +3,7 @@ import { goto } from '$app/navigation';
 import { resolve } from '$app/paths';
 import { SocketEvent } from '../../shared/types';
 import type { JoinRoomParams, JoinRoomResponse, Room, CreateRoomParams } from '../../shared/types';
-import { io, Socket } from 'socket.io-client';
+import { io, type Socket } from 'socket.io-client';
 import { appState } from '$lib/stores.svelte';
 import { pubsub } from '$lib/pubsub';
 

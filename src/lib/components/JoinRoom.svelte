@@ -8,7 +8,7 @@
     roomId?: string;
   };
 
-  const { roomId } = $props<Props>();
+  const { roomId }: Props = $props();
 
   let name = $state('');
   let selectedIcon = $state('');
@@ -91,7 +91,7 @@
             placeholder="Enter your name"
             class="input input-bordered"
             bind:value={name}
-            onkeypress={(e) => e.key === 'Enter' && join()}
+            onkeypress={(e) => e.key === 'Enter' && joinOrCreate()}
           />
         </div>
 
