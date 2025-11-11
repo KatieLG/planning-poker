@@ -1,7 +1,12 @@
 import express from 'express';
 import { Server, Socket } from 'socket.io';
 import { createServer } from 'node:http';
-import { type JoinRoomParams, SocketEvent, type Room } from '../shared/types';
+import {
+  type JoinRoomParams,
+  SocketEvent,
+  type Room,
+  type CreateRoomParams
+} from '../shared/types';
 import {
   createRoom,
   joinRoom,
@@ -58,9 +63,9 @@ io.on('connection', (socket: Socket) => {
     handleLeaveRoom(socket);
   });
 
-  socket.on(SocketEvent.CREATE_ROOM, () => {
+  socket.on(SocketEvent.CREATE_ROOM, (params: CreateRoomParams) => {
     handleEvent(socket, () => {
-      const room = createRoom(socket.id);
+      const room = createRoom(socket.id, params.name, params.icon);
       socket.join(room.id);
       socket.emit(SocketEvent.CREATE_ROOM, room);
     });

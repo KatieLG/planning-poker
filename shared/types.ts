@@ -18,10 +18,13 @@ export type RoomUserLink = {
   userId: string;
 };
 
-export type JoinRoomParams = {
-  roomId: string;
+export type CreateRoomParams = {
   name: string;
   icon?: string;
+};
+
+export type JoinRoomParams = CreateRoomParams & {
+  roomId: string;
 };
 
 export type JoinRoomResponse = {

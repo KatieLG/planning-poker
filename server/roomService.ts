@@ -23,14 +23,14 @@ const getRoomContext = (socketId: string): RoomContext => {
   return { room, user, link };
 };
 
-export const createRoom = (socketId: string): Room => {
+export const createRoom = (socketId: string, name: string, icon?: string): Room => {
   const roomId = nanoid();
   const userId = nanoid();
 
   const host: User = {
     id: userId,
-    icon: '👑',
-    name: 'Host',
+    icon,
+    name,
     isHost: true
   };
 

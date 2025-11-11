@@ -1,7 +1,6 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { resolve } from '$app/paths';
-  import { createRoom } from '$lib/client';
   import { pubsub } from '$lib/pubsub';
 
   let joinRoomId = $state('');
@@ -13,6 +12,10 @@
     } else {
       error = 'Enter a room ID to join.';
     }
+  };
+
+  const createRoom = () => {
+    goto(resolve(`/create`, {}));
   };
 
   $effect(() => {
