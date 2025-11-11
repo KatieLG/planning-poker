@@ -75,7 +75,6 @@
 
 {#if room}
   <div class="container mx-auto p-4 max-w-6xl">
-    <!-- Header -->
     <div class="navbar bg-base-100 rounded-box shadow-lg mb-6">
       <div class="flex-1">
         <button class="btn btn-ghost text-xl" onclick={leave}>Planning Poker</button>
@@ -93,7 +92,6 @@
       </div>
     {/if}
 
-    <!-- Players Grid -->
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
       {#each room.users as user (user.id)}
         {@const isCurrentUser = user.id === userId}
@@ -107,7 +105,6 @@
               {/if}
             </h3>
 
-            <!-- Card Display -->
             <div class="mt-2">
               {#if user?.cardValue !== undefined}
                 {#if room.revealed}
@@ -126,7 +123,6 @@
       {/each}
     </div>
 
-    <!-- Average Display -->
     {#if room.revealed}
       <div class="alert {average !== null ? 'alert-success' : 'alert-info'} mb-6">
         <div class="flex-1">
@@ -139,7 +135,6 @@
       </div>
     {/if}
 
-    <!-- Card Selection -->
     {#if !room.revealed}
       <div class="card bg-base-100 shadow-xl mb-6">
         <div class="card-body">
@@ -160,7 +155,6 @@
       </div>
     {/if}
 
-    <!-- Host Controls -->
     {#if isHost}
       <div class="card bg-base-100 shadow-xl">
         <div class="card-body">

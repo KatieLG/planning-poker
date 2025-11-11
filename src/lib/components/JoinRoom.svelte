@@ -1,7 +1,6 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { resolve } from '$app/paths';
-  import { page } from '$app/state';
   import { joinRoom, createRoom } from '$lib/client';
   import { pubsub } from '$lib/pubsub';
 
