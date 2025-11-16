@@ -63,7 +63,6 @@
   };
 
   const leave = () => {
-    localStorage.clear();
     leaveRoom();
     goto(resolve('/', {}));
   };

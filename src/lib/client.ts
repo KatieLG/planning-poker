@@ -9,6 +9,13 @@ import { pubsub } from '$lib/pubsub';
 
 const socket: Socket | null = browser ? io() : null;
 
+const clearUserData = () => {
+  localStorage.removeItem('roomId');
+  localStorage.removeItem('userId');
+  localStorage.removeItem('username');
+  localStorage.removeItem('userIcon');
+};
+
 if (socket) {
   socket.on('connect', () => {});
 
@@ -37,7 +44,7 @@ if (socket) {
   socket.on(SocketEvent.DISBAND_ROOM, () => {
     appState.currentRoom = null;
     appState.currentUserId = null;
-    localStorage.clear();
+    clearUserData();
     pubsub.emit('toast', {
       type: 'info',
       message: 'The room has been disbanded by the host'
@@ -71,5 +78,6 @@ export function resetRoom() {
 }
 
 export function leaveRoom() {
+  clearUserData();
   socket?.emit(SocketEvent.LEAVE_ROOM);
 }
