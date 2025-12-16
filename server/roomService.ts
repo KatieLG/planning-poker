@@ -4,6 +4,10 @@ import { nanoid } from 'nanoid';
 const rooms = new Map<string, Room>();
 const socketMap = new Map<string, RoomUserLink>();
 
+// Track disbanding rooms with grace period for host reconnection
+const disbandingRooms = new Map<string, NodeJS.Timeout>();
+const HOST_RECONNECT_GRACE_PERIOD_MS = 30000; // 30 seconds
+
 type RoomContext = {
   room: Room;
   user: User;
@@ -69,17 +73,82 @@ export const joinRoom = (
   return { room, userId };
 };
 
-export const leaveRoom = (socketId: string): { room: Room; disband: boolean } => {
+export const leaveRoom = (socketId: string): { room: Room; hostDisconnected: boolean } => {
   const context = getRoomContext(socketId);
   socketMap.delete(socketId);
 
   const { room, link } = context;
   room.users = room.users.filter((user) => user.id !== link.userId);
-  const disband = room.hostId == link.userId;
+  const isHost = room.hostId === link.userId;
 
-  if (disband) rooms.delete(room.id);
+  return { room, hostDisconnected: isHost };
+};
 
-  return { room, disband };
+export const scheduleDisband = (roomId: string, onDisband: () => void): void => {
+  // If room already scheduled, skip
+  if (disbandingRooms.has(roomId)) return;
+
+  const timeout = setTimeout(() => {
+    const room = rooms.get(roomId);
+    if (room) {
+      rooms.delete(roomId);
+      disbandingRooms.delete(roomId);
+      onDisband();
+    }
+  }, HOST_RECONNECT_GRACE_PERIOD_MS);
+
+  disbandingRooms.set(roomId, timeout);
+};
+
+export const cancelDisband = (roomId: string): void => {
+  const timeout = disbandingRooms.get(roomId);
+  if (timeout) {
+    clearTimeout(timeout);
+    disbandingRooms.delete(roomId);
+  }
+};
+
+export const isRoomDisbanding = (roomId: string): boolean => {
+  return disbandingRooms.has(roomId);
+};
+
+export const roomExists = (roomId: string): boolean => {
+  return rooms.has(roomId);
+};
+
+// Rejoin room during grace period
+export const rejoinRoom = (
+  socketId: string,
+  roomId: string,
+  name: string,
+  icon?: string,
+  previousUserId?: string
+): { room: Room; userId: string } | null => {
+  const room = rooms.get(roomId);
+  if (!room) return null;
+
+  // Check if this is the original host reconnecting
+  const isHostReturning = previousUserId === room.hostId;
+
+  const userId = nanoid();
+  const user: User = {
+    id: userId,
+    name,
+    icon,
+    isHost: isHostReturning
+  };
+
+  socketMap.set(socketId, { roomId, userId });
+  room.users.push(user);
+
+  // If the original host is returning, update hostId and cancel disband
+  if (isHostReturning) {
+    console.log('host reconnected', socketId);
+    room.hostId = userId;
+    cancelDisband(roomId);
+  }
+
+  return { room, userId };
 };
 
 export const userVote = (socketId: string, cardValue: number | null): Room => {

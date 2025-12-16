@@ -2,7 +2,7 @@
   import { page } from '$app/state';
   import { browser } from '$app/environment';
   import { appState } from '$lib/stores.svelte';
-  import { vote, revealCards, resetRoom, joinRoom, leaveRoom } from '$lib/client';
+  import { vote, revealCards, resetRoom, joinRoom, leaveRoom, checkRoom } from '$lib/client';
   import { goto } from '$app/navigation';
   import { resolve } from '$app/paths';
   import { pubsub } from '$lib/pubsub';
@@ -29,6 +29,29 @@
   });
 
   $effect(() => {
+    return pubsub.on('roomNotFound', (notFoundRoomId: string) => {
+      if (notFoundRoomId === roomId) {
+        pubsub.emit('toast', {
+          type: 'error',
+          message: 'This room no longer exists'
+        });
+        goto(resolve('/', {}));
+      }
+    });
+  });
+
+  $effect(() => {
+    return pubsub.on('roomFound', (foundRoomId: string) => {
+      if (foundRoomId === roomId) {
+        // Room exists, try to join
+        if (username && userIcon) {
+          joinRoom({ roomId: roomId, name: username, icon: userIcon });
+        }
+      }
+    });
+  });
+
+  $effect(() => {
     if (room?.revealed) {
       const votes = room.users.map((u) => u.cardValue).filter((v) => v !== null && v !== undefined);
       if (votes.length) {
@@ -46,8 +69,8 @@
         goto(resolve(`/join/${roomId}`, {}));
         return;
       }
-      // else try to rejoin
-      joinRoom({ roomId: roomId, name: username, icon: userIcon });
+      // Check if room exists first before trying to rejoin
+      checkRoom(roomId);
     }
   });
 

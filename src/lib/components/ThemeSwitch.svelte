@@ -12,7 +12,6 @@
   onMount(() => {
     systemDefaultIsDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     toggleTheme = localStorage.getItem('toggleTheme') === 'true';
-    console.log(toggleTheme);
   });
 
   const savePreference = () => {

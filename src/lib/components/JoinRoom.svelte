@@ -1,8 +1,9 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { resolve } from '$app/paths';
-  import { joinRoom, createRoom } from '$lib/client';
+  import { joinRoom, createRoom, checkRoom } from '$lib/client';
   import { pubsub } from '$lib/pubsub';
+  import { onMount } from 'svelte';
 
   type Props = {
     roomId?: string;
@@ -13,7 +14,8 @@
   let name = $state('');
   let selectedIcon = $state('');
   let error = $state<string | null>('');
-  let isLoading = false;
+  let isLoading = $state(false);
+  let roomValid = $state<boolean | null>(null);
 
   const icons = [
     '😎',
@@ -46,11 +48,43 @@
     });
   });
 
+  $effect(() => {
+    return pubsub.on('roomNotFound', (notFoundRoomId: string) => {
+      if (notFoundRoomId === roomId) {
+        pubsub.emit('toast', {
+          type: 'error',
+          message: 'This room does not exist'
+        });
+        goto(resolve('/', {}));
+      }
+    });
+  });
+
+  $effect(() => {
+    return pubsub.on('roomFound', (foundRoomId: string) => {
+      if (foundRoomId === roomId) {
+        roomValid = true;
+        isLoading = false;
+      }
+    });
+  });
+
+  onMount(() => {
+    // Check room exists if joining
+    if (roomId) {
+      isLoading = true;
+      checkRoom(roomId);
+    } else {
+      roomValid = true;
+    }
+  });
+
   const joinOrCreate = () => {
     if (!name.trim() || !selectedIcon) {
       error = 'Please enter your name and select an icon.';
       return;
     }
+
     localStorage.setItem('username', name.trim());
     localStorage.setItem('userIcon', selectedIcon);
 

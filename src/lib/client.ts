@@ -55,6 +55,14 @@ if (socket) {
   socket.on(SocketEvent.ERROR, (error: { message: string | null }) => {
     pubsub.emit('error', error.message);
   });
+
+  socket.on(SocketEvent.ROOM_NOT_FOUND, (data: { roomId: string }) => {
+    pubsub.emit('roomNotFound', data.roomId);
+  });
+
+  socket.on(SocketEvent.ROOM_FOUND, (data: { roomId: string }) => {
+    pubsub.emit('roomFound', data.roomId);
+  });
 }
 
 export function createRoom(params: CreateRoomParams) {
@@ -62,7 +70,12 @@ export function createRoom(params: CreateRoomParams) {
 }
 
 export function joinRoom(params: JoinRoomParams) {
-  socket?.emit(SocketEvent.JOIN_ROOM, params);
+  // Include previous userId in case reconnecting
+  const savedUserId = browser ? localStorage.getItem('userId') : null;
+  socket?.emit(SocketEvent.JOIN_ROOM, {
+    ...params,
+    savedUserId: savedUserId
+  });
 }
 
 export function vote(cardValue: number | null) {
@@ -80,4 +93,8 @@ export function resetRoom() {
 export function leaveRoom() {
   clearUserData();
   socket?.emit(SocketEvent.LEAVE_ROOM);
+}
+
+export function checkRoom(roomId: string) {
+  socket?.emit(SocketEvent.CHECK_ROOM, roomId);
 }

@@ -25,6 +25,7 @@ export type CreateRoomParams = {
 
 export type JoinRoomParams = CreateRoomParams & {
   roomId: string;
+  savedUserId?: string; // send the user id in local storage if exists, for reconnecting
 };
 
 export type JoinRoomResponse = {
@@ -43,6 +44,9 @@ export const SocketEvent = {
   RESET_VOTES: 'reset_votes',
   ROOM_UPDATE: 'room_update',
   RESET_ROOM: 'reset_room',
+  CHECK_ROOM: 'check_room',
+  ROOM_FOUND: 'room_found',
+  ROOM_NOT_FOUND: 'room_not_found',
   ERROR: 'error'
 } as const;
 

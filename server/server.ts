@@ -13,7 +13,11 @@ import {
   leaveRoom,
   userVote,
   revealCards,
-  resetRoom
+  resetRoom,
+  scheduleDisband,
+  roomExists,
+  rejoinRoom,
+  isRoomDisbanding
 } from '../server/roomService';
 import { handler } from '../build/handler.js';
 
@@ -41,12 +45,17 @@ const updateRoom = (room: Room) => {
 const handleLeaveRoom = (socket: Socket) => {
   handleEvent(socket, () => {
     console.log('user disconnecting', socket.id);
-    const { room, disband } = leaveRoom(socket.id);
+    const { room, hostDisconnected } = leaveRoom(socket.id);
     socket.leave(room.id);
-    if (disband) {
-      console.log('disbanding room');
-      io.to(room.id).emit(SocketEvent.DISBAND_ROOM);
-    } else updateRoom(room);
+
+    if (hostDisconnected) {
+      // schedule disband after grace period if host does not reconnect
+      scheduleDisband(room.id, () => {
+        io.to(room.id).emit(SocketEvent.DISBAND_ROOM);
+      });
+    }
+
+    updateRoom(room);
   });
 };
 
@@ -73,10 +82,43 @@ io.on('connection', (socket: Socket) => {
 
   socket.on(SocketEvent.JOIN_ROOM, (params: JoinRoomParams) => {
     handleEvent(socket, () => {
+      if (!roomExists(params.roomId)) {
+        socket.emit(SocketEvent.ROOM_NOT_FOUND, { roomId: params.roomId });
+        return;
+      }
+
+      // Check if room is disbanding (host reconnecting)
+      if (isRoomDisbanding(params.roomId)) {
+        const result = rejoinRoom(
+          socket.id,
+          params.roomId,
+          params.name,
+          params.icon,
+          params.savedUserId
+        );
+        if (!result) {
+          socket.emit(SocketEvent.ROOM_NOT_FOUND, { roomId: params.roomId });
+          return;
+        }
+        const { room, userId } = result;
+        socket.emit(SocketEvent.JOIN_ROOM, { room, userId });
+        socket.join(room.id);
+        updateRoom(room);
+        return;
+      }
+
+      // Normal join
       const { room, userId } = joinRoom(socket.id, params.roomId, params.name, params.icon);
-      socket.emit(SocketEvent.JOIN_ROOM, { room: room, userId: userId });
+      socket.emit(SocketEvent.JOIN_ROOM, { room, userId });
       socket.join(room.id);
       updateRoom(room);
+    });
+  });
+
+  socket.on(SocketEvent.CHECK_ROOM, (roomId: string) => {
+    handleEvent(socket, () => {
+      const exists = roomExists(roomId);
+      socket.emit(exists ? SocketEvent.ROOM_FOUND : SocketEvent.ROOM_NOT_FOUND, { roomId });
     });
   });
 
