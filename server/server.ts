@@ -135,7 +135,6 @@ io.on('connection', (socket: Socket) => {
       const room = revealCards(socket.id);
       updateRoom(room);
       if (isVoteUnanimous(room)) {
-        console.log('Emitting unanimous vote event for room', room.id);
         io.to(room.id).emit(SocketEvent.UNANIMOUS_VOTE);
       }
     });

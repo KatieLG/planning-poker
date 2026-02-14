@@ -174,8 +174,6 @@ export const isVoteUnanimous = (room: Room): boolean => {
   const votes = room.users.filter((u) => !!u.cardValue).map((u) => u.cardValue);
   const uniqueVotes = new Set(votes);
 
-  console.log('Votes:', votes, 'Unique votes:', uniqueVotes);
-
   return uniqueVotes.size === 1;
 };
 

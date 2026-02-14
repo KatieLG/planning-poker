@@ -21,6 +21,7 @@
     "@sveltejs/kit": "^2.48.4",
     "@sveltejs/vite-plugin-svelte": "^6.2.1",
     "@tailwindcss/vite": "^4.1.16",
+    "@types/canvas-confetti": "^1.9.0",
     "@types/express": "^5.0.5",
     "@types/node": "^22.19.0",
     "@types/socket.io": "^3.0.1",
@@ -40,6 +41,7 @@
   },
   "dependencies": {
     "@sveltejs/adapter-node": "^5.4.0",
+    "canvas-confetti": "^1.9.4",
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "nanoid": "^3.3.11",

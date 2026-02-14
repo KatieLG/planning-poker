@@ -7,6 +7,7 @@
   import { resolve } from '$app/paths';
   import { pubsub } from '$lib/pubsub';
   import { onMount } from 'svelte';
+  import { launchFireworks } from '$lib/fireworks';
 
   const roomId = page.params.roomId;
 
@@ -53,11 +54,7 @@
 
   $effect(() => {
     return pubsub.on('unanimousVote', () => {
-      console.log('Unanimous vote detected!');
-      pubsub.emit('toast', {
-        type: 'success',
-        message: 'All players voted the same card!'
-      });
+      launchFireworks();
     });
   });
 
