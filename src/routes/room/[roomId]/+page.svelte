@@ -52,11 +52,7 @@
     });
   });
 
-  $effect(() => {
-    return pubsub.on('unanimousVote', () => {
-      launchFireworks();
-    });
-  });
+  $effect(() => pubsub.on('unanimousVote', () => launchFireworks()));
 
   $effect(() => {
     if (room?.revealed) {
