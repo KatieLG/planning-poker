@@ -17,7 +17,8 @@ import {
   scheduleDisband,
   roomExists,
   rejoinRoom,
-  isRoomDisbanding
+  isRoomDisbanding,
+  isVoteUnanimous
 } from '../server/roomService';
 import { handler } from '../build/handler.js';
 
@@ -133,6 +134,9 @@ io.on('connection', (socket: Socket) => {
     handleEvent(socket, () => {
       const room = revealCards(socket.id);
       updateRoom(room);
+      if (isVoteUnanimous(room)) {
+        io.to(room.id).emit(SocketEvent.UNANIMOUS_VOTE);
+      }
     });
   });
 

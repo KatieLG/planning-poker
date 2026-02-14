@@ -63,6 +63,10 @@ if (socket) {
   socket.on(SocketEvent.ROOM_FOUND, (data: { roomId: string }) => {
     pubsub.emit('roomFound', data.roomId);
   });
+
+  socket.on(SocketEvent.UNANIMOUS_VOTE, () => {
+    pubsub.emit('unanimousVote');
+  });
 }
 
 export function createRoom(params: CreateRoomParams) {

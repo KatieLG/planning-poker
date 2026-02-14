@@ -7,6 +7,7 @@
   import { resolve } from '$app/paths';
   import { pubsub } from '$lib/pubsub';
   import { onMount } from 'svelte';
+  import { launchFireworks } from '$lib/fireworks';
 
   const roomId = page.params.roomId;
 
@@ -50,6 +51,8 @@
       }
     });
   });
+
+  $effect(() => pubsub.on('unanimousVote', () => launchFireworks()));
 
   $effect(() => {
     if (room?.revealed) {

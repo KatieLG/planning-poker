@@ -40,6 +40,7 @@ export const SocketEvent = {
   LEAVE_ROOM: 'leave_room',
   DISBAND_ROOM: 'disband_room',
   VOTE: 'vote',
+  UNANIMOUS_VOTE: 'unanimous_vote',
   REVEAL_CARDS: 'reveal_cards',
   RESET_VOTES: 'reset_votes',
   ROOM_UPDATE: 'room_update',

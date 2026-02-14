@@ -3,6 +3,7 @@ type PubSubTypes = {
   toast: { type: 'success' | 'error' | 'info' | 'warning'; message: string };
   roomNotFound: string;
   roomFound: string;
+  unanimousVote: void;
 };
 
 const listeners = new Map<keyof PubSubTypes, Set<(data: PubSubTypes[keyof PubSubTypes]) => void>>();
@@ -17,7 +18,7 @@ export const pubsub = {
       listeners.get(event)?.delete(callback as (data: PubSubTypes[keyof PubSubTypes]) => void);
   },
 
-  emit<K extends keyof PubSubTypes>(event: K, data: PubSubTypes[K]) {
+  emit<K extends keyof PubSubTypes>(event: K, data?: PubSubTypes[K]) {
     listeners.get(event)?.forEach((callback) => callback(data));
   }
 };
