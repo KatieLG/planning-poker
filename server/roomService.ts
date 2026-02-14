@@ -170,11 +170,11 @@ export const revealCards = (socketId: string): Room => {
 };
 
 export const isVoteUnanimous = (room: Room): boolean => {
-  // ignore users who haven't voted
+  // ignore users who haven't voted and only fire event if at least 2 users voted the same
   const votes = room.users.filter((u) => !!u.cardValue).map((u) => u.cardValue);
   const uniqueVotes = new Set(votes);
 
-  return uniqueVotes.size === 1;
+  return uniqueVotes.size === 1 && votes.length > 1;
 };
 
 export const resetRoom = (socketId: string): Room => {

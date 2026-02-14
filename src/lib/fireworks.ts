@@ -2,7 +2,7 @@ import confetti from 'canvas-confetti';
 
 // other examples here: https://www.kirilv.com/canvas-confetti/
 export const launchFireworks = () => {
-  const duration = 8 * 1000; // 8 seconds
+  const duration = 5 * 1000; // 5 seconds
   const animationEnd = Date.now() + duration;
   const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
 
