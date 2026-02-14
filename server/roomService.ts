@@ -169,6 +169,16 @@ export const revealCards = (socketId: string): Room => {
   return room;
 };
 
+export const isVoteUnanimous = (room: Room): boolean => {
+  // ignore users who haven't voted
+  const votes = room.users.filter((u) => !!u.cardValue).map((u) => u.cardValue);
+  const uniqueVotes = new Set(votes);
+
+  console.log('Votes:', votes, 'Unique votes:', uniqueVotes);
+
+  return uniqueVotes.size === 1;
+};
+
 export const resetRoom = (socketId: string): Room => {
   const context = getRoomContext(socketId);
 

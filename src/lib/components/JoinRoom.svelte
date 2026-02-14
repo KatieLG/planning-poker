@@ -15,7 +15,6 @@
   let selectedIcon = $state('');
   let error = $state<string | null>('');
   let isLoading = $state(false);
-  let roomValid = $state<boolean | null>(null);
 
   const icons = [
     '😎',
@@ -63,7 +62,6 @@
   $effect(() => {
     return pubsub.on('roomFound', (foundRoomId: string) => {
       if (foundRoomId === roomId) {
-        roomValid = true;
         isLoading = false;
       }
     });
@@ -74,8 +72,6 @@
     if (roomId) {
       isLoading = true;
       checkRoom(roomId);
-    } else {
-      roomValid = true;
     }
   });
 

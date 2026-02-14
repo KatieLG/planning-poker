@@ -52,6 +52,16 @@
   });
 
   $effect(() => {
+    return pubsub.on('unanimousVote', () => {
+      console.log('Unanimous vote detected!');
+      pubsub.emit('toast', {
+        type: 'success',
+        message: 'All players voted the same card!'
+      });
+    });
+  });
+
+  $effect(() => {
     if (room?.revealed) {
       const votes = room.users.map((u) => u.cardValue).filter((v) => v !== null && v !== undefined);
       if (votes.length) {
