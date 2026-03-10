@@ -8,6 +8,7 @@
   import { pubsub } from '$lib/pubsub';
   import { onMount } from 'svelte';
   import { launchFireworks } from '$lib/fireworks';
+  import type { User } from '../../../../shared/types';
 
   const roomId = page.params.roomId;
 
@@ -88,6 +89,14 @@
     }
   };
 
+  const borderColor = (user: User) => {
+    // 🐰🥚
+    const userSum = [...user.name.toLowerCase()].reduce((sum, char) => sum + char.charCodeAt(0), 0);
+    if ([959, 625].includes(userSum % 1000)) return 'rainbow-border';
+    if (user.id === userId) return 'border-2 border-primary';
+    return '';
+  };
+
   const leave = () => {
     leaveRoom();
     goto(resolve('/', {}));
@@ -119,8 +128,7 @@
 
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
       {#each room.users as user (user.id)}
-        {@const isCurrentUser = user.id === userId}
-        <div class="card bg-base-100 shadow-xl {isCurrentUser ? 'border-2 border-primary' : ''}">
+        <div class="card bg-base-100 shadow-xl {borderColor(user)}">
           <div class="card-body items-center text-center p-4">
             <div class="text-4xl mb-2">{user.icon}</div>
             <h3 class="card-title text-sm">
