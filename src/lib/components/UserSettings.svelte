@@ -1,35 +1,16 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { settings } from '$lib/settings.svelte';
   import Sun from '$lib/icons/Sun.svelte';
   import Moon from '$lib/icons/Moon.svelte';
   import Cog from '$lib/icons/Cog.svelte';
   import SettingsModal from '$lib/components/SettingsModal.svelte';
 
-  let systemDefaultIsDark = $state(false);
-  let toggleTheme = $state(false);
-  let isDark = $state(false);
   let dialog = $state<HTMLDialogElement>();
 
   onMount(() => {
-    systemDefaultIsDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    toggleTheme = localStorage.getItem('toggleTheme') === 'true';
-    isDark = (systemDefaultIsDark && !toggleTheme) || (!systemDefaultIsDark && toggleTheme);
+    settings.initTheme();
   });
-
-  const savePreference = () => {
-    const theme =
-      (systemDefaultIsDark && toggleTheme) || (!systemDefaultIsDark && !toggleTheme)
-        ? 'light'
-        : 'dark';
-    isDark = theme === 'dark';
-    localStorage.setItem('toggleTheme', toggleTheme ? 'true' : 'false');
-    document.documentElement.setAttribute('data-theme', theme);
-  };
-
-  const setDark = (val: boolean) => {
-    toggleTheme = val !== systemDefaultIsDark;
-    savePreference();
-  };
 </script>
 
 <svelte:head>
@@ -55,13 +36,13 @@
     <input
       type="checkbox"
       class="theme-controller"
-      value={systemDefaultIsDark ? 'light' : 'dark'}
-      bind:checked={toggleTheme}
-      onchange={savePreference}
+      value={settings.systemDefaultIsDark ? 'light' : 'dark'}
+      checked={settings.toggleTheme}
+      onchange={(e) => settings.setToggleTheme((e.target as HTMLInputElement).checked)}
     />
-    <Sun classes="w-10 h-10 {systemDefaultIsDark ? 'swap-on' : 'swap-off'}" />
-    <Moon classes="w-10 h-10 {systemDefaultIsDark ? 'swap-off' : 'swap-on'}" />
+    <Sun classes="w-10 h-10 {settings.systemDefaultIsDark ? 'swap-on' : 'swap-off'}" />
+    <Moon classes="w-10 h-10 {settings.systemDefaultIsDark ? 'swap-off' : 'swap-on'}" />
   </label>
 </div>
 
-<SettingsModal bind:dialog {isDark} {setDark} />
+<SettingsModal bind:dialog />

@@ -6,11 +6,9 @@
 
   interface Props {
     dialog?: HTMLDialogElement;
-    isDark: boolean;
-    setDark: (val: boolean) => void;
   }
 
-  let { dialog = $bindable(), isDark, setDark }: Props = $props();
+  let { dialog = $bindable() }: Props = $props();
 </script>
 
 <dialog bind:this={dialog} class="modal">
@@ -31,8 +29,8 @@
         <input
           type="checkbox"
           class="toggle toggle-primary"
-          checked={isDark}
-          onchange={(e) => setDark((e.target as HTMLInputElement).checked)}
+          checked={settings.isDark}
+          onchange={(e) => settings.setDark((e.target as HTMLInputElement).checked)}
         />
       </label>
 
