@@ -39,7 +39,12 @@
       >
         <div class="flex items-center gap-3">
           <span class="text-lg opacity-70">🥚</span>
-          <span class="text-base">Easter Eggs</span>
+          <div class="flex flex-col">
+            <span class="text-base">Easter Eggs</span>
+            {#if settings.easterEggsEnabled}
+              <span class="text-xs opacity-50">Happy hunting 🐰</span>
+            {/if}
+          </div>
         </div>
         <input
           type="checkbox"
