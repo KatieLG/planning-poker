@@ -1,6 +1,8 @@
 <script lang="ts">
   import { settings } from '$lib/settings.svelte';
+  import Cog from '$lib/icons/Cog.svelte';
   import Moon from '$lib/icons/Moon.svelte';
+  import Egg from '$lib/icons/Egg.svelte';
 
   interface Props {
     dialog?: HTMLDialogElement;
@@ -14,7 +16,7 @@
 <dialog bind:this={dialog} class="modal">
   <div class="modal-box pop-in">
     <div class="flex items-center gap-2 mb-5">
-      <span class="text-2xl">⚙️</span>
+      <Cog classes="w-6 h-6 opacity-70" />
       <h3 class="font-black text-xl tracking-wide">Settings</h3>
     </div>
 
@@ -38,7 +40,7 @@
         class="flex items-center justify-between px-3 py-3 rounded-xl hover:bg-base-200 cursor-pointer transition-colors"
       >
         <div class="flex items-center gap-3">
-          <span class="text-lg opacity-70">🥚</span>
+          <Egg classes="w-5 h-5 opacity-70" />
           <div class="flex flex-col">
             <span class="text-base">Easter Eggs</span>
             {#if settings.easterEggsEnabled}
