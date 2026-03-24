@@ -4,12 +4,10 @@
 
   let {
     user,
-    revealed,
-    nullCardIcon
+    revealed
   }: {
     user: User;
     revealed: boolean;
-    nullCardIcon: string;
   } = $props();
 
   const bubbles = Array.from({ length: 10 }, (_, i) => ({
@@ -30,7 +28,7 @@
   {/each}
 
   <div class="card-body items-center text-center p-4 relative z-10">
-    <CardContent {user} {revealed} {nullCardIcon} />
+    <CardContent {user} {revealed} />
   </div>
 </div>
 

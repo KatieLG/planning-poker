@@ -5,18 +5,16 @@
   let {
     user,
     revealed,
-    isCurrentUser,
-    nullCardIcon
+    isCurrentUser
   }: {
     user: User;
     revealed: boolean;
     isCurrentUser: boolean;
-    nullCardIcon: string;
   } = $props();
 </script>
 
 <div class="card bg-base-100 shadow-xl {isCurrentUser ? 'border-2 border-primary' : ''}">
   <div class="card-body items-center text-center p-4">
-    <CardContent {user} {revealed} {nullCardIcon} />
+    <CardContent {user} {revealed} />
   </div>
 </div>

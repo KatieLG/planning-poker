@@ -5,12 +5,10 @@
 
   let {
     user,
-    revealed,
-    nullCardIcon
+    revealed
   }: {
     user: User;
     revealed: boolean;
-    nullCardIcon: string;
   } = $props();
 
   let canvas: HTMLCanvasElement;
@@ -50,13 +48,7 @@
 <div class="card shadow-xl relative overflow-hidden matrix-border">
   <canvas bind:this={canvas} class="absolute inset-0 w-full h-full rounded-2xl"></canvas>
   <div class="card-body items-center text-center p-4 relative z-10">
-    <CardContent
-      {user}
-      {revealed}
-      {nullCardIcon}
-      nameClass="text-green-400"
-      valueClass="text-green-400"
-    />
+    <CardContent {user} {revealed} nameClass="text-green-400" valueClass="text-green-400" />
   </div>
 </div>
 

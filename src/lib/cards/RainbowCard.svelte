@@ -4,17 +4,15 @@
 
   let {
     user,
-    revealed,
-    nullCardIcon
+    revealed
   }: {
     user: User;
     revealed: boolean;
-    nullCardIcon: string;
   } = $props();
 </script>
 
 <div class="card bg-base-100 shadow-xl rainbow-border">
   <div class="card-body items-center text-center p-4">
-    <CardContent {user} {revealed} {nullCardIcon} />
+    <CardContent {user} {revealed} />
   </div>
 </div>

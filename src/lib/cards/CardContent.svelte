@@ -4,16 +4,16 @@
   let {
     user,
     revealed,
-    nullCardIcon,
     nameClass = '',
     valueClass = 'text-primary'
   }: {
     user: User;
     revealed: boolean;
-    nullCardIcon: string;
     nameClass?: string;
     valueClass?: string;
   } = $props();
+
+  const nullCardIcon = '🦞';
 </script>
 
 <div class="text-4xl mb-2">{user.icon}</div>

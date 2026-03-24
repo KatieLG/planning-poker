@@ -4,13 +4,13 @@
 
   let {
     user,
-    revealed,
-    nullCardIcon
+    revealed
   }: {
     user: User;
     revealed: boolean;
-    nullCardIcon: string;
   } = $props();
+
+  const nullCardIcon = '🦞';
 
   type Vein = { id: number; top: string; left: string; size: string };
 

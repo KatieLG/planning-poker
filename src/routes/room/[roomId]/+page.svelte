@@ -16,8 +16,6 @@
   const userIcon = browser ? localStorage.getItem('userIcon') : null;
 
   const cardOptions = [0, 1, 2, 3, 5, 8, 13, 21, null];
-  const nullCardIcon = '🦞';
-
   let average: number | null = $state(null);
   let error = $state<string | null>(null);
   let room = $derived(appState.currentRoom);
@@ -121,12 +119,7 @@
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
       {#each room.users as user (user.id)}
         {@const CardComponent = getCardComponent(user)}
-        <CardComponent
-          {user}
-          revealed={room.revealed}
-          isCurrentUser={user.id === userId}
-          {nullCardIcon}
-        />
+        <CardComponent {user} revealed={room.revealed} isCurrentUser={user.id === userId} />
       {/each}
     </div>
 
