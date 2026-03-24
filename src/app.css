@@ -1,24 +1,6 @@
 @import 'tailwindcss';
 @plugin "daisyui";
 
-.rainbow-border {
-  border: 3px solid transparent;
-  background-image:
-    linear-gradient(var(--color-base-100), var(--color-base-100)),
-    linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet, red);
-  background-clip: padding-box, border-box;
-  background-size: 200%;
-  animation: rainbow-spin 2s linear infinite;
-}
-
-@keyframes rainbow-spin {
-  to {
-    background-position:
-      0 0,
-      200% 0;
-  }
-}
-
 @layer utilities {
   .btn-outline {
     --btn-border: color-mix(in oklab, currentColor 40%, transparent);

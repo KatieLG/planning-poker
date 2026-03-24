@@ -2,14 +2,12 @@
   import { onMount } from 'svelte';
   import type { User } from '../../../shared/types';
   import CardContent from './CardContent.svelte';
+  import FancyBorder from './FancyBorder.svelte';
 
-  let {
-    user,
-    revealed
-  }: {
-    user: User;
-    revealed: boolean;
-  } = $props();
+  let { user, revealed }: { user: User; revealed: boolean } = $props();
+
+  const colors = ['#00ff41', '#00b300', '#39ff14', '#008000', '#00ff41'];
+  const bg = 'rgb(30, 30, 30)';
 
   let canvas: HTMLCanvasElement;
 
@@ -45,29 +43,9 @@
   });
 </script>
 
-<div class="card shadow-xl relative overflow-hidden matrix-border">
+<FancyBorder {colors} {bg} class="card shadow-xl relative overflow-hidden">
   <canvas bind:this={canvas} class="absolute inset-0 w-full h-full rounded-2xl"></canvas>
   <div class="card-body items-center text-center p-4 relative z-10">
     <CardContent {user} {revealed} nameClass="text-green-400" valueClass="text-green-400" />
   </div>
-</div>
-
-<style>
-  .matrix-border {
-    border: 3px solid transparent;
-    background-image:
-      linear-gradient(rgb(30, 30, 30), rgb(30, 30, 30)),
-      linear-gradient(90deg, #00ff41, #00b300, #39ff14, #008000, #00ff41);
-    background-clip: padding-box, border-box;
-    background-size: 300%;
-    animation: matrix-border-spin 2s linear infinite;
-  }
-
-  @keyframes matrix-border-spin {
-    to {
-      background-position:
-        0 0,
-        300% 0;
-    }
-  }
-</style>
+</FancyBorder>

@@ -16,6 +16,7 @@
   const userIcon = browser ? localStorage.getItem('userIcon') : null;
 
   const cardOptions = [0, 1, 2, 3, 5, 8, 13, 21, null];
+  const nullCardIcon = '🦞';
   let average: number | null = $state(null);
   let error = $state<string | null>(null);
   let room = $derived(appState.currentRoom);

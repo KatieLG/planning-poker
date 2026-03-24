@@ -7,7 +7,6 @@ import MatrixCard from './MatrixCard.svelte';
 import AngryCard from './AngryCard.svelte';
 import AquariumCard from './AquariumCard.svelte';
 
-// Add new easter egg card components here and add a check in getCardComponent below.
 export type CardComponent =
   | typeof NormalCard
   | typeof RainbowCard

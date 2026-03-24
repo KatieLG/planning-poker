@@ -1,14 +1,12 @@
 <script lang="ts">
   import type { User } from '../../../shared/types';
   import CardContent from './CardContent.svelte';
+  import FancyBorder from './FancyBorder.svelte';
 
-  let {
-    user,
-    revealed
-  }: {
-    user: User;
-    revealed: boolean;
-  } = $props();
+  let { user, revealed }: { user: User; revealed: boolean } = $props();
+
+  const colors = ['#0ea5e9', '#06b6d4', '#10b981', '#1d4ed8', '#06b6d4', '#0ea5e9'];
+  const bg = 'color-mix(in oklab, var(--color-base-100), #0ea5e9 12%)';
 
   const bubbles = Array.from({ length: 10 }, (_, i) => ({
     id: i,
@@ -19,7 +17,7 @@
   }));
 </script>
 
-<div class="card shadow-xl ocean-border relative overflow-hidden">
+<FancyBorder {colors} {bg} class="card shadow-xl relative overflow-hidden">
   {#each bubbles as b (b.id)}
     <span
       class="bubble"
@@ -30,30 +28,9 @@
   <div class="card-body items-center text-center p-4 relative z-10">
     <CardContent {user} {revealed} />
   </div>
-</div>
+</FancyBorder>
 
 <style>
-  .ocean-border {
-    border: 3px solid transparent;
-    background-image:
-      linear-gradient(
-        color-mix(in oklab, var(--color-base-100), #0ea5e9 12%),
-        color-mix(in oklab, var(--color-base-100), #0ea5e9 12%)
-      ),
-      linear-gradient(90deg, #0ea5e9, #06b6d4, #10b981, #1d4ed8, #06b6d4, #0ea5e9);
-    background-clip: padding-box, border-box;
-    background-size: 300%;
-    animation: ocean-spin 4s linear infinite;
-  }
-
-  @keyframes ocean-spin {
-    to {
-      background-position:
-        0 0,
-        300% 0;
-    }
-  }
-
   @keyframes float-up {
     0% {
       transform: translateY(0);
