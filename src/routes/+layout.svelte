@@ -2,7 +2,7 @@
   import favicon from '$lib/assets/favicon.png';
   import '../app.css';
   import Toast from '$lib/components/Toast.svelte';
-  import ThemeSwitch from '$lib/components/ThemeSwitch.svelte';
+  import UserSettings from '$lib/components/UserSettings.svelte';
 
   let { children } = $props();
 </script>
@@ -13,6 +13,6 @@
 
 <div class="min-h-screen bg-base-200 relative">
   {@render children()}
-  <ThemeSwitch />
+  <UserSettings />
   <Toast />
 </div>
