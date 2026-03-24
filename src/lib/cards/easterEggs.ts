@@ -3,10 +3,16 @@ import type { User } from '../../../shared/types';
 import NormalCard from './NormalCard.svelte';
 import RainbowCard from './RainbowCard.svelte';
 import MatrixCard from './MatrixCard.svelte';
-import AllCapsCard from './AllCapsCard.svelte';
+import AngryCard from './AngryCard.svelte';
+import AquariumCard from './AquariumCard.svelte';
 
 // Add new easter egg card components here and add a check in getCardComponent below.
-export type CardComponent = typeof NormalCard | typeof RainbowCard | typeof MatrixCard | typeof AllCapsCard;
+export type CardComponent =
+  | typeof NormalCard
+  | typeof RainbowCard
+  | typeof MatrixCard
+  | typeof AngryCard
+  | typeof AquariumCard;
 
 function isValidHTML(name: string): boolean {
   if (!browser) return false;
@@ -26,7 +32,8 @@ function isAllCaps(name: string): boolean {
 
 export function getCardComponent(user: User): CardComponent {
   if (isValidHTML(user.name)) return MatrixCard;
-  if (isAllCaps(user.name)) return AllCapsCard;
+  if (isAllCaps(user.name)) return AngryCard;
+  if (user.name.includes('🦞')) return LobsterCard;
   if (isRainbow(user.name)) return RainbowCard;
   return NormalCard;
 }
