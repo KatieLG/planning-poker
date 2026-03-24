@@ -29,7 +29,7 @@
     const drops: number[] = Array(cols).fill(1);
 
     const draw = () => {
-      ctx.fillStyle = 'rgba(0,0,0,0.15)';
+      ctx.fillStyle = 'rgba(30, 30, 30, 0.15)';
       ctx.fillRect(0, 0, W, H);
       ctx.fillStyle = '#00ff41';
       ctx.font = `${fontSize}px monospace`;
@@ -47,7 +47,7 @@
   });
 </script>
 
-<div class="card bg-base-100 shadow-xl relative overflow-hidden">
+<div class="card shadow-xl relative overflow-hidden matrix-border">
   <canvas bind:this={canvas} class="absolute inset-0 w-full h-full rounded-2xl"></canvas>
   <div class="card-body items-center text-center p-4 relative z-10">
     <CardContent
@@ -59,3 +59,23 @@
     />
   </div>
 </div>
+
+<style>
+  .matrix-border {
+    border: 3px solid transparent;
+    background-image:
+      linear-gradient(rgb(30, 30, 30), rgb(30, 30, 30)),
+      linear-gradient(90deg, #00ff41, #00b300, #39ff14, #008000, #00ff41);
+    background-clip: padding-box, border-box;
+    background-size: 300%;
+    animation: matrix-border-spin 2s linear infinite;
+  }
+
+  @keyframes matrix-border-spin {
+    to {
+      background-position:
+        0 0,
+        300% 0;
+    }
+  }
+</style>
