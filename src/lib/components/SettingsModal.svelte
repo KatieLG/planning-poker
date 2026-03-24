@@ -17,7 +17,7 @@
   <div class="modal-box pop-in">
     <div class="flex items-center gap-2 mb-5">
       <Cog classes="w-6 h-6 opacity-70" />
-      <h3 class="font-black text-xl tracking-wide">Settings</h3>
+      <h3 class="font-bold text-xl">Settings</h3>
     </div>
 
     <div class="flex flex-col gap-1">
