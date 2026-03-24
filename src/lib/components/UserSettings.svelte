@@ -2,16 +2,18 @@
   import { onMount } from 'svelte';
   import Sun from '$lib/icons/Sun.svelte';
   import Moon from '$lib/icons/Moon.svelte';
-
-  // By default the app uses the system preference for theme
-  // this needs to provide a toggle to light mode if the default is dark, else a toggle to dark
+  import Cog from '$lib/icons/Cog.svelte';
+  import SettingsModal from '$lib/components/SettingsModal.svelte';
 
   let systemDefaultIsDark = $state(false);
   let toggleTheme = $state(false);
+  let isDark = $state(false);
+  let dialog = $state<HTMLDialogElement>();
 
   onMount(() => {
     systemDefaultIsDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     toggleTheme = localStorage.getItem('toggleTheme') === 'true';
+    isDark = (systemDefaultIsDark && !toggleTheme) || (!systemDefaultIsDark && toggleTheme);
   });
 
   const savePreference = () => {
@@ -19,8 +21,14 @@
       (systemDefaultIsDark && toggleTheme) || (!systemDefaultIsDark && !toggleTheme)
         ? 'light'
         : 'dark';
+    isDark = theme === 'dark';
     localStorage.setItem('toggleTheme', toggleTheme ? 'true' : 'false');
     document.documentElement.setAttribute('data-theme', theme);
+  };
+
+  const setDark = (val: boolean) => {
+    toggleTheme = val !== systemDefaultIsDark;
+    savePreference();
   };
 </script>
 
@@ -39,6 +47,10 @@
 </svelte:head>
 
 <div class="fixed bottom-6 right-6 flex flex-col gap-3 z-50">
+  <button onclick={() => dialog?.showModal()}>
+    <Cog classes="w-10 h-10" />
+  </button>
+
   <label class="swap swap-rotate">
     <input
       type="checkbox"
@@ -47,8 +59,9 @@
       bind:checked={toggleTheme}
       onchange={savePreference}
     />
-
     <Sun classes="w-10 h-10 {systemDefaultIsDark ? 'swap-on' : 'swap-off'}" />
     <Moon classes="w-10 h-10 {systemDefaultIsDark ? 'swap-off' : 'swap-on'}" />
   </label>
 </div>
+
+<SettingsModal bind:dialog {isDark} {setDark} />

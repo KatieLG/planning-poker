@@ -1,5 +1,5 @@
 import { browser } from '$app/environment';
-import { PUBLIC_EASTER_EGGS } from '$env/static/public';
+import { settings } from '$lib/settings.svelte';
 import type { User } from '../../../shared/types';
 import NormalCard from './NormalCard.svelte';
 import RainbowCard from './RainbowCard.svelte';
@@ -52,7 +52,7 @@ function hasSeaCreature(name: string): boolean {
 }
 
 export function getCardComponent(user: User): CardComponent {
-  if (PUBLIC_EASTER_EGGS !== 'true') return NormalCard;
+  if (!settings.easterEggsEnabled) return NormalCard;
 
   if (isValidHTML(user.name)) return MatrixCard;
   if (isAllCaps(user.name)) return AngryCard;
