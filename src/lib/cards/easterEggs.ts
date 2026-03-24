@@ -3,9 +3,10 @@ import type { User } from '../../../shared/types';
 import NormalCard from './NormalCard.svelte';
 import RainbowCard from './RainbowCard.svelte';
 import MatrixCard from './MatrixCard.svelte';
+import AllCapsCard from './AllCapsCard.svelte';
 
 // Add new easter egg card components here and add a check in getCardComponent below.
-export type CardComponent = typeof NormalCard | typeof RainbowCard | typeof MatrixCard;
+export type CardComponent = typeof NormalCard | typeof RainbowCard | typeof MatrixCard | typeof AllCapsCard;
 
 function isValidHTML(name: string): boolean {
   if (!browser) return false;
@@ -19,8 +20,13 @@ function isRainbow(name: string): boolean {
   return [959, 625].includes(userSum % 1000);
 }
 
+function isAllCaps(name: string): boolean {
+  return name.trim().length > 1 && name.trim() === name.trim().toUpperCase() && /[A-Z]/.test(name);
+}
+
 export function getCardComponent(user: User): CardComponent {
   if (isValidHTML(user.name)) return MatrixCard;
+  if (isAllCaps(user.name)) return AllCapsCard;
   if (isRainbow(user.name)) return RainbowCard;
   return NormalCard;
 }
