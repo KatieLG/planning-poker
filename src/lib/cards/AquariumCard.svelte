@@ -38,7 +38,10 @@
   .ocean-border {
     border: 3px solid transparent;
     background-image:
-      linear-gradient(color-mix(in oklab, var(--color-base-100), #0ea5e9 8%), color-mix(in oklab, var(--color-base-100), #0ea5e9 8%)),
+      linear-gradient(
+        color-mix(in oklab, var(--color-base-100), #0ea5e9 8%),
+        color-mix(in oklab, var(--color-base-100), #0ea5e9 8%)
+      ),
       linear-gradient(90deg, #0ea5e9, #06b6d4, #10b981, #1d4ed8, #06b6d4, #0ea5e9);
     background-clip: padding-box, border-box;
     background-size: 300%;
@@ -73,6 +76,4 @@
     animation: float-up linear infinite;
     pointer-events: none;
   }
-
-
 </style>

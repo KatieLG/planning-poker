@@ -20,8 +20,15 @@
   onMount(() => {
     const spawn = () => {
       const id = nextId++;
-      veins.push({ id, top: `${5 + Math.random() * 75}%`, left: `${5 + Math.random() * 75}%`, size: `${0.8 + Math.random() * 0.6}rem` });
-      setTimeout(() => { veins = veins.filter((v) => v.id !== id); }, 600);
+      veins.push({
+        id,
+        top: `${5 + Math.random() * 75}%`,
+        left: `${5 + Math.random() * 75}%`,
+        size: `${0.8 + Math.random() * 0.6}rem`
+      });
+      setTimeout(() => {
+        veins = veins.filter((v) => v.id !== id);
+      }, 600);
     };
 
     const spawnBurst = () => {
@@ -91,11 +98,22 @@
   }
 
   @keyframes shake {
-    0%, 100% { transform: translate(0, 0); }
-    20%       { transform: translate(-2px, 1px); }
-    40%       { transform: translate(2px, -1px); }
-    60%       { transform: translate(-1px, 2px); }
-    80%       { transform: translate(1px, -2px); }
+    0%,
+    100% {
+      transform: translate(0, 0);
+    }
+    20% {
+      transform: translate(-2px, 1px);
+    }
+    40% {
+      transform: translate(2px, -1px);
+    }
+    60% {
+      transform: translate(-1px, 2px);
+    }
+    80% {
+      transform: translate(1px, -2px);
+    }
   }
 
   @keyframes vein-pop {
