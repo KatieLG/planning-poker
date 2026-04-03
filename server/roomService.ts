@@ -27,7 +27,7 @@ const getRoomContext = (socketId: string): RoomContext => {
   return { room, user, link };
 };
 
-export const createRoom = (socketId: string, name: string, icon?: string): Room => {
+export const createRoom = (socketId: string, name: string, icon: string): Room => {
   const roomId = nanoid();
   const userId = nanoid();
 
@@ -55,7 +55,7 @@ export const joinRoom = (
   socketId: string,
   roomId: string,
   name: string,
-  icon?: string
+  icon: string
 ): { room: Room; userId: string } => {
   const room = rooms.get(roomId);
   if (!room) throw new Error('Room not found');
@@ -121,7 +121,7 @@ export const rejoinRoom = (
   socketId: string,
   roomId: string,
   name: string,
-  icon?: string,
+  icon: string,
   previousUserId?: string
 ): { room: Room; userId: string } | null => {
   const room = rooms.get(roomId);

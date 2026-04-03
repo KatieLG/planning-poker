@@ -1,7 +1,7 @@
 export type User = {
   id: string;
   name: string;
-  icon?: string;
+  icon: string;
   isHost: boolean;
   cardValue?: number | null;
 };
@@ -20,7 +20,7 @@ export type RoomUserLink = {
 
 export type CreateRoomParams = {
   name: string;
-  icon?: string;
+  icon: string;
 };
 
 export type JoinRoomParams = CreateRoomParams & {
