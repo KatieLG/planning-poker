@@ -29,7 +29,8 @@ const SEA_CREATURE_EMOJIS = new Set([
   '🐙',
   '🦐',
   '🐚',
-  '🦪'
+  '🦪',
+  '🐢'
 ]);
 
 function isValidHTML(name: string): boolean {
@@ -47,8 +48,8 @@ function isAllCaps(name: string): boolean {
   return name.trim().length > 1 && name.trim() === name.trim().toUpperCase() && /[A-Z]/.test(name);
 }
 
-function hasSeaCreature(name: string): boolean {
-  return [...name].some((char) => SEA_CREATURE_EMOJIS.has(char));
+function hasSeaCreature(name: string, icon: string): boolean {
+  return [...name, ...icon].some((char) => SEA_CREATURE_EMOJIS.has(char));
 }
 
 export function getCardComponent(user: User): CardComponent {
@@ -56,7 +57,7 @@ export function getCardComponent(user: User): CardComponent {
 
   if (isValidHTML(user.name)) return MatrixCard;
   if (isAllCaps(user.name)) return AngryCard;
-  if (hasSeaCreature(user.name)) return AquariumCard;
+  if (hasSeaCreature(user.name, user.icon)) return AquariumCard;
   if (isSpecialName(user.name)) return RainbowCard;
   return NormalCard;
 }
