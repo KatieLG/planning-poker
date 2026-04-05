@@ -16,6 +16,7 @@
   let error = $state<string | null>('');
   let isLoading = $state(false);
 
+  // icons are in rows of 6
   const icons = [
     '😎',
     '🤓',
@@ -33,20 +34,26 @@
     '🌈',
     '🌵',
     '✈️',
+    '🪼',
     '🚀',
     '💩',
     '🐢',
     '🏖️',
     '💥',
+    '🐳',
     '🐙',
     '🐛',
     '🍾',
     '💅',
     '🦙',
+    '🐠',
+    '🦄',
     '🐌',
     '🦁',
     '🍄',
-    '🌴'
+    '🌴',
+    '🌋',
+    '🐥'
   ];
 
   $effect(() => {

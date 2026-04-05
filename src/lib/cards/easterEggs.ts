@@ -30,7 +30,8 @@ const SEA_CREATURE_EMOJIS = new Set([
   '🦐',
   '🐚',
   '🦪',
-  '🐢'
+  '🐢',
+  '🪼'
 ]);
 
 function isValidHTML(name: string): boolean {

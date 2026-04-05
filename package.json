@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch server/server.ts",
+    "dev": "vite build && tsx watch server/server.ts",
     "build": "vite build",
     "start": "node build/index.js",
     "preview": "vite preview",
