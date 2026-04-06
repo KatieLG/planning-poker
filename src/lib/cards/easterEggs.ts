@@ -6,6 +6,7 @@ import RainbowCard from './RainbowCard.svelte';
 import MatrixCard from './MatrixCard.svelte';
 import AngryCard from './AngryCard.svelte';
 import AquariumCard from './AquariumCard.svelte';
+import GhostCard from './GhostCard.svelte';
 
 export type CardComponent =
   | typeof NormalCard
@@ -53,12 +54,17 @@ function hasSeaCreature(name: string, icon: string): boolean {
   return [...name, ...icon].some((char) => SEA_CREATURE_EMOJIS.has(char));
 }
 
+function isGhost(icon: string): boolean {
+  return icon.includes('👻');
+}
+
 export function getCardComponent(user: User): CardComponent {
   if (!settings.easterEggsEnabled) return NormalCard;
 
   if (isValidHTML(user.name)) return MatrixCard;
-  if (isAllCaps(user.name)) return AngryCard;
   if (hasSeaCreature(user.name, user.icon)) return AquariumCard;
+  if (isGhost(user.icon)) return GhostCard;
   if (isSpecialName(user.name)) return RainbowCard;
+  if (isAllCaps(user.name)) return AngryCard;
   return NormalCard;
 }
