@@ -58,13 +58,17 @@ function isGhost(icon: string): boolean {
   return icon.includes('👻');
 }
 
+function isCreator(name: string): boolean {
+  return name.toLowerCase() === "katie";
+}
+
 export function getCardComponent(user: User): CardComponent {
   if (!settings.easterEggsEnabled) return NormalCard;
 
   if (isValidHTML(user.name)) return MatrixCard;
   if (hasSeaCreature(user.name, user.icon)) return AquariumCard;
   if (isGhost(user.icon)) return GhostCard;
-  if (isSpecialName(user.name)) return RainbowCard;
+  if (isSpecialName(user.name) || isCreator(user.name)) return RainbowCard;
   if (isAllCaps(user.name)) return AngryCard;
   return NormalCard;
 }
