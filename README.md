@@ -1,6 +1,6 @@
 # Planning Poker
 
-A simple planning poker app built with Svelte 5, Express, and Socket.IO.
+A simple planning poker app built with Svelte 5 and Socket.IO.
 
 The site is hosted on Render at: https://planning-poker-mc7d.onrender.com/
 
