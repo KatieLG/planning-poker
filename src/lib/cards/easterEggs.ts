@@ -59,7 +59,7 @@ function isGhost(icon: string): boolean {
 }
 
 function isCreator(name: string): boolean {
-  return name.toLowerCase() === "katie";
+  return name.toLowerCase() === 'katie';
 }
 
 export function getCardComponent(user: User): CardComponent {

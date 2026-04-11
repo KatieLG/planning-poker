@@ -4,15 +4,15 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "dev": "vite build && tsx watch server/server.ts",
+    "dev": "vite build && bun --watch server/server.ts",
     "build": "vite build",
-    "start": "node build/index.js",
-    "preview": "vite preview",
+    "start": "NODE_ENV=production bun run server/server.ts",
     "prepare": "svelte-kit sync || echo ''",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "format": "prettier --write .",
-    "lint": "prettier --check . && eslint ."
+    "lint": "prettier --check . && eslint .",
+    "pre": "bun format && bun lint && bun check"
   },
   "devDependencies": {
     "@eslint/compat": "^1.4.0",
@@ -43,9 +43,7 @@
     "@sveltejs/adapter-node": "^5.4.0",
     "canvas-confetti": "^1.9.4",
     "cors": "^2.8.5",
-    "express": "^4.21.2",
     "nanoid": "^3.3.11",
-    "socket.io-client": "^4.8.1",
-    "tsx": "^4.20.6"
+    "socket.io-client": "^4.8.1"
   }
 }

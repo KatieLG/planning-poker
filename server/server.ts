@@ -1,4 +1,3 @@
-import express from 'express';
 import { Server, Socket } from 'socket.io';
 import { createServer } from 'node:http';
 import {
@@ -20,14 +19,12 @@ import {
   isRoomDisbanding,
   isVoteUnanimous
 } from '../server/roomService';
-import { handler } from '../build/handler.js';
 
-const app = express();
-const server = createServer(app);
+// Force dynamic import to stop svelte-check trying to look in the build folder
+const handler = await import('../build/' + 'handler.js').then((mod) => mod.handler);
+const server = createServer(handler);
 const port = process.env.PORT || 3000;
 const io = new Server(server);
-
-app.use(handler);
 
 const handleEvent = (socket: Socket, handler: () => void) => {
   try {
