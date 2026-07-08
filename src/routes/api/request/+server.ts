@@ -17,17 +17,13 @@ const postWebhook = (url: string | undefined, body: object) => {
 };
 
 const slackPayload = (category: string, message: string) => ({
-  blocks: [
+  attachments: [
     {
-      type: 'header',
-      text: {
-        type: 'plain_text',
-        text: `${CATEGORY_EMOJI[category] ?? '📝'} ${category} — Planning Poker`
-      }
-    },
-    {
-      type: 'section',
-      text: { type: 'mrkdwn', text: message }
+      color: '#6366f1',
+      title: `${CATEGORY_EMOJI[category] ?? '📝'} ${category}`,
+      text: message,
+      footer: 'Planning Poker',
+      mrkdwn_in: ['text']
     }
   ]
 });
