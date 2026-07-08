@@ -42,7 +42,9 @@
         body: JSON.stringify({ category, message: message.trim() })
       });
 
-      if (!res.ok) {
+      if (res.status === 429) {
+        error = 'Too many requests — please wait a moment before trying again.';
+      } else if (!res.ok) {
         error = 'Something went wrong. Please try again.';
       } else {
         submitted = true;

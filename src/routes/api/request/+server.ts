@@ -1,4 +1,28 @@
-import { json, error } from '@sveltejs/kit';
+import { json, error, type RequestEvent } from '@sveltejs/kit';
+
+const MAX_REQUESTS = 10;
+const RATE_LIMIT_WINDOW = 60_000;
+const ipHits = new Map<string, { count: number; resetAt: number }>();
+
+const checkRateLimit = (ip: string): boolean => {
+  const now = Date.now();
+
+  for (const [key, entry] of ipHits) {
+    if (now >= entry.resetAt) ipHits.delete(key);
+  }
+
+  const ipHit = ipHits.get(ip);
+
+  if (!ipHit) {
+    ipHits.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW });
+    return true;
+  }
+
+  if (ipHit.count >= MAX_REQUESTS) return false;
+
+  ipHit.count++;
+  return true;
+};
 
 const CATEGORY_EMOJI: Record<string, string> = {
   Feature: '🚀',
@@ -39,7 +63,11 @@ const discordPayload = (category: string, message: string) => ({
   ]
 });
 
-export const POST = async ({ request }: { request: Request }) => {
+export const POST = async ({ request, getClientAddress }: RequestEvent) => {
+  if (!checkRateLimit(getClientAddress())) {
+    error(429, 'Too many requests');
+  }
+
   const { category, message } = await request.json();
 
   if (!category || !message?.trim()) {
