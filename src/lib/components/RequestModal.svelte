@@ -7,7 +7,7 @@
 
   let { dialog = $bindable() }: Props = $props();
 
-  const CATEGORIES = ['Feature', 'Bug', 'Easter egg', 'Idea', 'Other'] as const;
+  const CATEGORIES = ['Feature', 'Bug', 'Easter egg', 'Other'] as const;
   type Category = (typeof CATEGORIES)[number];
 
   let category = $state<Category>('Feature');
@@ -68,7 +68,7 @@
     {#if submitted}
       <div class="flex flex-col items-center gap-3 py-6 text-center">
         <span class="text-4xl">🎉</span>
-        <p class="text-base font-medium">Thanks for the feedback!</p>
+        <p class="text-base font-medium">Request submitted!</p>
         <button class="btn btn-primary btn-sm mt-2" onclick={close}>Done</button>
       </div>
     {:else}
