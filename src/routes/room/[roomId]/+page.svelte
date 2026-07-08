@@ -9,6 +9,7 @@
   import { onMount } from 'svelte';
   import { launchFireworks } from '$lib/fireworks';
   import { getCardComponent } from '$lib/cards/easterEggs';
+  import Link from '$lib/icons/Link.svelte';
 
   const roomId = page.params.roomId;
 
@@ -106,7 +107,10 @@
         <div class="badge badge-primary ml-2">Room: {roomId}</div>
       </div>
       <div class="flex-none gap-2">
-        <button class="btn btn-outline btn-sm" onclick={copyRoomLink}> 📋 Copy Join Link </button>
+        <button class="btn btn-primary btn-sm gap-2" onclick={copyRoomLink}>
+          <Link classes="w-4 h-4" />
+          Copy join link
+        </button>
         <button class="btn btn-ghost btn-sm" onclick={leave}> Leave </button>
       </div>
     </div>
