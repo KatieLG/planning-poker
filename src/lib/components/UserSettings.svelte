@@ -31,15 +31,15 @@
 </svelte:head>
 
 <div class="fixed bottom-6 right-6 flex flex-col gap-3 z-50">
-  <button onclick={() => requestDialog?.showModal()}>
+  <button class="cursor-pointer" onclick={() => requestDialog?.showModal()}>
     <Lightbulb classes="w-10 h-10" />
   </button>
 
-  <button onclick={() => dialog?.showModal()}>
+  <button class="cursor-pointer" onclick={() => dialog?.showModal()}>
     <Cog classes="w-10 h-10" />
   </button>
 
-  <label class="swap swap-rotate">
+  <label class="swap swap-rotate cursor-pointer">
     <input
       type="checkbox"
       class="theme-controller"
