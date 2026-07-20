@@ -10,7 +10,9 @@
 
   let { dialog = $bindable() }: Props = $props();
 
-  const ENTRIES = parseChangelog(changelogMarkdown);
+  const DISPLAY_COUNT = 3;
+  const allEntries = parseChangelog(changelogMarkdown);
+  const displayEntries = allEntries.slice(0, DISPLAY_COUNT);
 </script>
 
 <dialog bind:this={dialog} class="modal">
@@ -21,7 +23,7 @@
     </div>
 
     <div class="flex flex-col gap-5">
-      {#each ENTRIES as entry (entry.date)}
+      {#each displayEntries as entry (entry.date)}
         <div>
           <p class="text-xs font-medium opacity-40 mb-1.5">
             {new Date(entry.date).toLocaleDateString(undefined, {
@@ -39,35 +41,28 @@
       {/each}
     </div>
 
-    <a
-      class="flex items-center gap-1.5 mt-5 pt-4 border-t border-base-200 text-sm opacity-60 hover:opacity-100 transition-opacity w-fit"
-      href="https://github.com/KatieLG/planning-poker"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      <GitHub classes="w-4 h-4" />
-      View source on GitHub
-    </a>
+    <div class="flex flex-col gap-2 mt-5 pt-4 border-t border-base-200">
+      <a
+        class="text-sm opacity-60 hover:opacity-100 transition-opacity w-fit"
+        href="https://github.com/KatieLG/planning-poker/blob/main/CHANGELOG.md"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        See earlier updates &rarr;
+      </a>
+      <a
+        class="flex items-center gap-1.5 text-sm opacity-60 hover:opacity-100 transition-opacity w-fit"
+        href="https://github.com/KatieLG/planning-poker"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <GitHub classes="w-4 h-4" />
+        Star on GitHub
+      </a>
+    </div>
   </div>
 
   <form method="dialog" class="modal-backdrop backdrop-blur-sm bg-black/20">
     <button>close</button>
   </form>
 </dialog>
-
-<style>
-  @keyframes pop-in {
-    0% {
-      transform: scale(0.95);
-      opacity: 0;
-    }
-    100% {
-      transform: scale(1);
-      opacity: 1;
-    }
-  }
-
-  .pop-in {
-    animation: pop-in 0.15s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
-  }
-</style>

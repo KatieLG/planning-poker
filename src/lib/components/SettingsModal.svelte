@@ -60,20 +60,3 @@
     <button>close</button>
   </form>
 </dialog>
-
-<style>
-  @keyframes pop-in {
-    0% {
-      transform: scale(0.95);
-      opacity: 0;
-    }
-    100% {
-      transform: scale(1);
-      opacity: 1;
-    }
-  }
-
-  .pop-in {
-    animation: pop-in 0.15s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
-  }
-</style>

@@ -1,17 +1,18 @@
 # Changelog
 
-Notable changes for players are listed here, newest first.
+## 2026-07-23
+
+- Added an info panel with changelog and links to github
 
 ## 2026-07-08
 
-- Added a feature request button so you can send ideas, bugs, and feedback straight to us
-- Nicer copy-link experience for sharing a room
-- Basic rate limiting to keep things running smoothly for everyone
+- Added a feature request modal for ideas, bugs, and feedback
+- Better looking copy-link button
 
 ## 2026-04-11
 
-- Under-the-hood performance and reliability improvements
+- Migrated to bun for better performance
 
 ## 2026-04-06
 
-- A couple of new easter egg cards to discover
+- Added a new easter egg
