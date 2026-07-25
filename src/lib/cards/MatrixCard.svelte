@@ -4,7 +4,11 @@
   import CardContent from './CardContent.svelte';
   import FancyBorder from './FancyBorder.svelte';
 
-  let { user, revealed }: { user: User; revealed: boolean } = $props();
+  let {
+    user,
+    revealed,
+    throwingEnabled
+  }: { user: User; revealed: boolean; throwingEnabled: boolean } = $props();
 
   const colors = ['#00ff41', '#00b300', '#39ff14', '#008000', '#00ff41'];
   const bg = 'rgb(30, 30, 30)';
@@ -46,6 +50,12 @@
 <FancyBorder {colors} {bg} class="card shadow-xl relative overflow-hidden">
   <canvas bind:this={canvas} class="absolute inset-0 w-full h-full rounded-2xl"></canvas>
   <div class="card-body items-center text-center p-4 relative z-10">
-    <CardContent {user} {revealed} nameClass="text-green-400" valueClass="text-green-400" />
+    <CardContent
+      {user}
+      {revealed}
+      {throwingEnabled}
+      nameClass="text-green-400"
+      valueClass="text-green-400"
+    />
   </div>
 </FancyBorder>

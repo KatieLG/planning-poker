@@ -1,22 +1,37 @@
 <script lang="ts">
   import type { User } from '../../../shared/types';
+  import ThrowButton from '../components/ThrowButton.svelte';
+  import { throwEmoji } from '$lib/client';
 
   let {
     user,
     revealed,
+    throwingEnabled,
     nameClass = '',
     valueClass = 'text-primary'
   }: {
     user: User;
     revealed: boolean;
+    throwingEnabled: boolean;
     nameClass?: string;
     valueClass?: string;
   } = $props();
 
   const nullCardIcon = '🦞';
+
+  const handleThrow = () => {
+    throwEmoji(user.id);
+  };
 </script>
 
-<div class="text-4xl mb-2">{user.icon}</div>
+<div class="relative w-full">
+  <div class="text-4xl mb-2">{user.icon}</div>
+  {#if throwingEnabled}
+    <div class="absolute top-0 right-0">
+      <ThrowButton onThrow={handleThrow} />
+    </div>
+  {/if}
+</div>
 <h3 class="card-title text-sm {nameClass}">
   {user.name}
   {#if user.isHost}

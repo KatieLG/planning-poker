@@ -17,7 +17,11 @@ import {
   roomExists,
   rejoinRoom,
   isRoomDisbanding,
-  isVoteUnanimous
+  isVoteUnanimous,
+  toggleThrowing,
+  isThrowingEnabled,
+  getUserRoom,
+  getUser
 } from '../server/roomService';
 
 // Force dynamic import to stop svelte-check trying to look in the build folder
@@ -140,6 +144,27 @@ io.on('connection', (socket: Socket) => {
   socket.on(SocketEvent.RESET_ROOM, () => {
     handleEvent(socket, () => {
       const room = resetRoom(socket.id);
+      updateRoom(room);
+    });
+  });
+
+  socket.on(SocketEvent.THROW_EMOJI, (data: { targetId: string }) => {
+    handleEvent(socket, () => {
+      if (!isThrowingEnabled(socket.id)) return;
+
+      const user = getUser(socket.id);
+      const room = getUserRoom(socket.id);
+
+      io.to(room.id).emit(SocketEvent.THROW_EMOJI, {
+        targetId: data.targetId,
+        throwerEmoji: user.icon
+      });
+    });
+  });
+
+  socket.on(SocketEvent.TOGGLE_THROWING, () => {
+    handleEvent(socket, () => {
+      const room = toggleThrowing(socket.id);
       updateRoom(room);
     });
   });

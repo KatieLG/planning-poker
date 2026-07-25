@@ -11,6 +11,7 @@ export type Room = {
   hostId: string;
   users: User[];
   revealed: boolean;
+  throwingEnabled: boolean;
 };
 
 export type RoomUserLink = {
@@ -33,6 +34,11 @@ export type JoinRoomResponse = {
   userId: string;
 };
 
+export type ThrowEmojiData = {
+  targetId: string;
+  throwerEmoji: string;
+};
+
 export const SocketEvent = {
   DISCONNECT: 'disconnect',
   CREATE_ROOM: 'create_room',
@@ -48,6 +54,8 @@ export const SocketEvent = {
   CHECK_ROOM: 'check_room',
   ROOM_FOUND: 'room_found',
   ROOM_NOT_FOUND: 'room_not_found',
+  THROW_EMOJI: 'throw_emoji',
+  TOGGLE_THROWING: 'toggle_throwing',
   ERROR: 'error'
 } as const;
 
