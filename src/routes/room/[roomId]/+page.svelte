@@ -198,7 +198,7 @@
       <div class="card bg-base-100 shadow-xl">
         <div class="card-body">
           <h2 class="card-title justify-center">Host Controls</h2>
-          <div class="flex flex-col gap-4 justify-center items-center">
+          <div class="flex flex-col items-center">
             <div class="flex gap-4">
               {#if !room.revealed}
                 <button class="btn btn-primary btn-lg" onclick={revealCards}>
@@ -208,9 +208,16 @@
                 <button class="btn btn-secondary btn-lg" onclick={resetRoom}> 🔄 New Round </button>
               {/if}
             </div>
-            <button class="btn btn-outline btn-lg" onclick={toggleEmojis}>
-              {room.throwingEnabled ? '🫵 Disable Throwing' : '🫵 Enable Throwing'}
-            </button>
+            <div class="divider my-2"></div>
+            <label class="flex items-center gap-3 cursor-pointer text-base-content/70">
+              <span>Emoji Throwing</span>
+              <input
+                type="checkbox"
+                class="toggle toggle-primary"
+                checked={room.throwingEnabled}
+                onchange={toggleEmojis}
+              />
+            </label>
           </div>
         </div>
       </div>
