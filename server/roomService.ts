@@ -42,7 +42,8 @@ export const createRoom = (socketId: string, name: string, icon: string): Room =
     id: roomId,
     users: [host],
     hostId: userId,
-    revealed: false
+    revealed: false,
+    throwingEnabled: true
   };
 
   rooms.set(roomId, newRoom);
@@ -189,4 +190,32 @@ export const resetRoom = (socketId: string): Room => {
   });
 
   return room;
+};
+
+export const toggleThrowing = (socketId: string): Room => {
+  const context = getRoomContext(socketId);
+
+  const { room, user } = context;
+  if (!user.isHost) throw new Error('Only the host can toggle throwing');
+
+  room.throwingEnabled = !room.throwingEnabled;
+  return room;
+};
+
+export const isThrowingEnabled = (socketId: string): boolean => {
+  const link = socketMap.get(socketId);
+  if (!link) return false;
+
+  const room = rooms.get(link.roomId);
+  return room?.throwingEnabled ?? false;
+};
+
+export const getUserRoom = (socketId: string): Room => {
+  const context = getRoomContext(socketId);
+  return context.room;
+};
+
+export const getUser = (socketId: string): User => {
+  const context = getRoomContext(socketId);
+  return context.user;
 };

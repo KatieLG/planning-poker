@@ -4,17 +4,19 @@
 
   let {
     user,
+    isCurrentUser,
     revealed,
-    isCurrentUser
+    throwingEnabled
   }: {
     user: User;
-    revealed: boolean;
     isCurrentUser: boolean;
+    revealed: boolean;
+    throwingEnabled: boolean;
   } = $props();
 </script>
 
 <div class="card bg-base-100 shadow-xl {isCurrentUser ? 'border-2 border-primary' : ''}">
   <div class="card-body items-center text-center p-4">
-    <CardContent {user} {revealed} />
+    <CardContent {user} {revealed} {throwingEnabled} />
   </div>
 </div>

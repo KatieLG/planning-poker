@@ -3,7 +3,11 @@
   import CardContent from './CardContent.svelte';
   import FancyBorder from './FancyBorder.svelte';
 
-  let { user, revealed }: { user: User; revealed: boolean } = $props();
+  let {
+    user,
+    revealed,
+    throwingEnabled
+  }: { user: User; revealed: boolean; throwingEnabled: boolean } = $props();
 
   const colors = ['#0ea5e9', '#06b6d4', '#10b981', '#1d4ed8', '#06b6d4', '#0ea5e9'];
   const bg = 'color-mix(in oklab, var(--color-base-100), #0ea5e9 12%)';
@@ -26,7 +30,7 @@
   {/each}
 
   <div class="card-body items-center text-center p-4 relative z-10">
-    <CardContent {user} {revealed} />
+    <CardContent {user} {revealed} {throwingEnabled} />
   </div>
 </FancyBorder>
 

@@ -3,7 +3,11 @@
   import FancyBorder from './FancyBorder.svelte';
   import CardContent from './CardContent.svelte';
 
-  let { user, revealed }: { user: User; revealed: boolean } = $props();
+  let {
+    user,
+    revealed,
+    throwingEnabled
+  }: { user: User; revealed: boolean; throwingEnabled: boolean } = $props();
 
   const colors = ['#dc2626', '#f87171', '#dc2626', '#991b1b', '#dc2626'];
 </script>
@@ -14,6 +18,7 @@
       <CardContent
         {user}
         {revealed}
+        {throwingEnabled}
         nameClass="font-black tracking-widest"
         valueClass="text-error font-black"
       />

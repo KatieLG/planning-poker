@@ -2,7 +2,13 @@ import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { resolve } from '$app/paths';
 import { SocketEvent } from '../../shared/types';
-import type { JoinRoomParams, JoinRoomResponse, Room, CreateRoomParams } from '../../shared/types';
+import type {
+  JoinRoomParams,
+  JoinRoomResponse,
+  Room,
+  CreateRoomParams,
+  ThrowEmojiData
+} from '../../shared/types';
 import { io, type Socket } from 'socket.io-client';
 import { appState } from '$lib/stores.svelte';
 import { pubsub } from '$lib/pubsub';
@@ -67,6 +73,10 @@ if (socket) {
   socket.on(SocketEvent.UNANIMOUS_VOTE, () => {
     pubsub.emit('unanimousVote');
   });
+
+  socket.on(SocketEvent.THROW_EMOJI, (data: ThrowEmojiData) => {
+    pubsub.emit('throwEmoji', data);
+  });
 }
 
 export function createRoom(params: CreateRoomParams) {
@@ -101,4 +111,12 @@ export function leaveRoom() {
 
 export function checkRoom(roomId: string) {
   socket?.emit(SocketEvent.CHECK_ROOM, roomId);
+}
+
+export function throwEmoji(targetId: string) {
+  socket?.emit(SocketEvent.THROW_EMOJI, { targetId });
+}
+
+export function toggleEmojis() {
+  socket?.emit(SocketEvent.TOGGLE_THROWING);
 }

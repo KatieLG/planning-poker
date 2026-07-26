@@ -2,7 +2,15 @@
   import { page } from '$app/state';
   import { browser } from '$app/environment';
   import { appState } from '$lib/stores.svelte';
-  import { vote, revealCards, resetRoom, joinRoom, leaveRoom, checkRoom } from '$lib/client';
+  import {
+    vote,
+    revealCards,
+    resetRoom,
+    joinRoom,
+    leaveRoom,
+    checkRoom,
+    toggleEmojis
+  } from '$lib/client';
   import { goto } from '$app/navigation';
   import { resolve } from '$app/paths';
   import { pubsub } from '$lib/pubsub';
@@ -10,6 +18,11 @@
   import { launchFireworks } from '$lib/fireworks';
   import { getCardComponent } from '$lib/cards/easterEggs';
   import Link from '$lib/icons/Link.svelte';
+  import EmojiProjectile from '$lib/components/EmojiProjectile.svelte';
+  import { nanoid } from 'nanoid';
+  import type { ThrowEmojiData } from '../../../../shared/types';
+
+  type ThrownEmoji = ThrowEmojiData & { id: string };
 
   const roomId = page.params.roomId;
 
@@ -23,6 +36,8 @@
   let room = $derived(appState.currentRoom);
   let userId = $derived(appState.currentUserId);
   let isHost = $derived(room?.hostId === userId);
+  let thrownEmojis = $state<ThrownEmoji[]>([]);
+  let cardElementsByUserId = $state<Record<string, HTMLElement | null>>({});
 
   $effect(() => {
     return pubsub.on('error', (message: string | null) => {
@@ -54,6 +69,18 @@
   });
 
   $effect(() => pubsub.on('unanimousVote', () => launchFireworks()));
+
+  $effect(() => {
+    return pubsub.on('throwEmoji', (data: ThrowEmojiData) => {
+      const id = nanoid();
+      thrownEmojis.push({ ...data, id });
+
+      // Remove after animation completes
+      setTimeout(() => {
+        thrownEmojis = thrownEmojis.filter((e) => e.id !== id);
+      }, 1100);
+    });
+  });
 
   $effect(() => {
     if (room?.revealed) {
@@ -124,7 +151,14 @@
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
       {#each room.users as user (user.id)}
         {@const CardComponent = getCardComponent(user)}
-        <CardComponent {user} revealed={room.revealed} isCurrentUser={user.id === userId} />
+        <div bind:this={cardElementsByUserId[user.id]}>
+          <CardComponent
+            {user}
+            isCurrentUser={user.id === userId}
+            revealed={room.revealed}
+            throwingEnabled={room.throwingEnabled}
+          />
+        </div>
       {/each}
     </div>
 
@@ -164,19 +198,35 @@
       <div class="card bg-base-100 shadow-xl">
         <div class="card-body">
           <h2 class="card-title justify-center">Host Controls</h2>
-          <div class="flex gap-4 justify-center">
-            {#if !room.revealed}
-              <button class="btn btn-primary btn-lg" onclick={revealCards}>
-                🎭 Reveal Cards
-              </button>
-            {:else}
-              <button class="btn btn-secondary btn-lg" onclick={resetRoom}> 🔄 New Round </button>
-            {/if}
+          <div class="flex flex-col items-center">
+            <div class="flex gap-4">
+              {#if !room.revealed}
+                <button class="btn btn-primary btn-lg" onclick={revealCards}>
+                  🎭 Reveal Cards
+                </button>
+              {:else}
+                <button class="btn btn-secondary btn-lg" onclick={resetRoom}> 🔄 New Round </button>
+              {/if}
+            </div>
+            <div class="divider my-2"></div>
+            <label class="flex items-center gap-3 cursor-pointer text-base-content/70">
+              <span>Emoji Throwing</span>
+              <input
+                type="checkbox"
+                class="toggle toggle-primary"
+                checked={room.throwingEnabled}
+                onchange={toggleEmojis}
+              />
+            </label>
           </div>
         </div>
       </div>
     {/if}
   </div>
+
+  {#each thrownEmojis as emoji (emoji.id)}
+    <EmojiProjectile {emoji} targetElement={cardElementsByUserId[emoji.targetId]} />
+  {/each}
 {:else}
   <div class="flex items-center justify-center min-h-screen">
     <span class="loading loading-spinner loading-lg"></span>

@@ -1,9 +1,12 @@
+import type { ThrowEmojiData } from '../../shared/types';
+
 type PubSubTypes = {
   error: string | null;
   toast: { type: 'success' | 'error' | 'info' | 'warning'; message: string };
   roomNotFound: string;
   roomFound: string;
   unanimousVote: void;
+  throwEmoji: ThrowEmojiData;
 };
 
 const listeners = new Map<keyof PubSubTypes, Set<(data: PubSubTypes[keyof PubSubTypes]) => void>>();
