@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-07-26
+
+- Add the ability to throw emojis at others
+
 ## 2026-07-23
 
 - Added an info panel with changelog and links to github
