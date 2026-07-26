@@ -8,33 +8,33 @@
 
   const { emoji, targetElement }: Props = $props();
 
-  let projectile = $state<HTMLDivElement | null>(null);
-
   interface Position {
     x: number;
     y: number;
   }
 
-  let startPos = $state<Position>({ x: 0, y: 0 });
-  let targetPos = $state<Position>({ x: 0, y: 0 });
+  let startPos = $state<Position | null>(null);
+  let targetPos = $state<Position | null>(null);
   let progress = $state(0);
+  let fade = $state(0); // how faded the emoji is post landing from 0 (none) to 1 (fully faded)
   let isRemoved = $state(false);
   let rotation = $state(0);
 
   function getRandomPosition(): number {
-    // Returns -1 to 1, biased towards 0 (center)
-    const biased = Math.random() + Math.random() - 1;
-    return Math.max(-1, Math.min(1, biased));
+    // random between [-1,1], triangular dist so biased toward center
+    return Math.random() + Math.random() - 1;
   }
 
   $effect(() => {
-    if (!targetElement || !projectile) return;
+    if (!targetElement) return;
 
     const rect = targetElement.getBoundingClientRect();
-    const randomOffsetX = getRandomPosition() * (rect.width * 0.3); // 30% variation
-    const randomOffsetY = getRandomPosition() * (rect.height * 0.3);
+    // random offsets for the landing position, up to 50% of card width/height
+    const randomOffsetX = getRandomPosition() * (rect.width * 0.5);
+    const randomOffsetY = getRandomPosition() * (rect.height * 0.5);
 
     startPos = {
+      // either -50 from left or +50 from right
       x: Math.random() > 0.5 ? -50 : window.innerWidth + 50,
       y: Math.random() * window.innerHeight
     };
@@ -44,51 +44,67 @@
       y: rect.top + rect.height / 2 + randomOffsetY
     };
 
-    // Animate
     const startTime = Date.now();
-    const duration = 600; // 600ms animation
+    const animationDuration = 600; // milliseconds
     const initialRotation = Math.random() * 360;
 
     const animate = () => {
       const elapsed = Date.now() - startTime;
-      progress = Math.min(elapsed / duration, 1);
+      progress = Math.min(elapsed / animationDuration, 1);
 
-      // Continuous rotation (like a spinning throw)
-      rotation = initialRotation + progress * 720; // Full 2 rotations
+      // continuous rotation up to 2 full spins for a spinning emoji
+      rotation = initialRotation + progress * 720;
 
       if (progress < 1) {
         requestAnimationFrame(animate);
       } else {
-        // Remove after animation completes
-        setTimeout(() => {
-          isRemoved = true;
-        }, 500);
+        // Landed - fade out over 500ms, then remove
+        fadeOut();
       }
+    };
+
+    const fadeDuration = 500; // milliseconds
+
+    const fadeOut = () => {
+      const start = Date.now();
+      const step = () => {
+        fade = Math.min((Date.now() - start) / fadeDuration, 1);
+        if (fade < 1) {
+          requestAnimationFrame(step);
+        } else {
+          isRemoved = true;
+        }
+      };
+      requestAnimationFrame(step);
     };
 
     requestAnimationFrame(animate);
   });
 
-  // Parabolic arc for Y position (gravity effect)
-  const currentX = $derived(startPos.x + (targetPos.x - startPos.x) * progress);
-  const arcHeight = $derived(200); // Maximum arc height
-  const currentY = $derived(
-    startPos.y + (targetPos.y - startPos.y) * progress - arcHeight * Math.sin(progress * Math.PI)
-  );
+  const peakHeight = 200; // peak height of the throw (px)
+  const lerp = (from: number, to: number, t: number) => from + (to - from) * t;
 
-  // Calculate velocity-based scale (appears smaller when further away)
-  const scale = $derived(1 - progress * 0.2);
+  // Emoji position between start and target, with a parabolic effect on height.
+  const position = $derived.by(() => {
+    if (!startPos || !targetPos) return null;
+    const currentLift = peakHeight * Math.sin(progress * Math.PI); // peaks mid-flight
+    return {
+      x: lerp(startPos.x, targetPos.x, progress),
+      y: lerp(startPos.y, targetPos.y, progress) - currentLift
+    };
+  });
+
+  const opacity = $derived(1 - fade);
 </script>
 
-{#if !isRemoved}
+{#if !isRemoved && position}
   <div
-    bind:this={projectile}
     class="fixed pointer-events-none z-50 text-4xl"
     style="
-      left: {currentX}px;
-      top: {currentY}px;
-      opacity: {progress < 0.85 ? 1 : Math.max(0, 1 - (progress - 0.85) / 0.15)};
-      transform: translate(-50%, -50%) rotate({rotation}deg) scale({scale});
+      left: {position.x}px;
+      top: {position.y}px;
+      opacity: {opacity};
+      transform: translate(-50%, -50%) rotate({rotation}deg);
       text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4), 0 0 8px rgba(255, 255, 255, 0.6);
       filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.3));
     "
