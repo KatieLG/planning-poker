@@ -1,3 +1,5 @@
+import changelogMarkdown from '../../CHANGELOG.md?raw';
+
 export type ChangelogEntry = {
   date: string;
   items: string[];
@@ -23,3 +25,5 @@ export function parseChangelog(markdown: string): ChangelogEntry[] {
 
   return entries;
 }
+
+export const changelogEntries = parseChangelog(changelogMarkdown);

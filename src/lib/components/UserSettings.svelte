@@ -9,14 +9,26 @@
   import SettingsModal from '$lib/components/SettingsModal.svelte';
   import RequestModal from '$lib/components/RequestModal.svelte';
   import ChangelogModal from '$lib/components/ChangelogModal.svelte';
+  import { changelogEntries } from '$lib/changelog';
 
   let dialog = $state<HTMLDialogElement>();
   let requestDialog = $state<HTMLDialogElement>();
   let changelogDialog = $state<HTMLDialogElement>();
 
+  const latestChangelogDate = changelogEntries[0]?.date ?? '';
+  let hasUnseenChanges = $state(false);
+
   onMount(() => {
     settings.initTheme();
+    const seenDate = localStorage.getItem('changelogSeen') ?? '';
+    hasUnseenChanges = seenDate < latestChangelogDate;
   });
+
+  const openChangelog = () => {
+    changelogDialog?.showModal();
+    localStorage.setItem('changelogSeen', latestChangelogDate);
+    hasUnseenChanges = false;
+  };
 </script>
 
 <svelte:head>
@@ -34,7 +46,13 @@
 </svelte:head>
 
 <div class="fixed bottom-6 right-6 flex flex-col gap-3 z-50">
-  <button class="cursor-pointer" onclick={() => changelogDialog?.showModal()}>
+  <button class="cursor-pointer indicator" onclick={openChangelog}>
+    {#if hasUnseenChanges}
+      <span
+        class="indicator-item top-1.5 right-1.5 w-3 h-3 rounded-full bg-primary ring-2 ring-base-100"
+        aria-label="New updates"
+      ></span>
+    {/if}
     <Info classes="w-10 h-10" />
   </button>
 
