@@ -23,7 +23,20 @@ const clearUserData = () => {
 };
 
 if (socket) {
-  socket.on('connect', () => {});
+  // Track having previously connected
+  let hasConnected = false;
+  socket.on('connect', () => {
+    // If browser reconnects with a new socketId, attempt to rejoin the previous room,
+    // (will rejoin as host if within the grace period) to avoid the room being disbanded
+    if (hasConnected && appState.currentRoom) {
+      const username = localStorage.getItem('username');
+      const userIcon = localStorage.getItem('userIcon');
+      if (username && userIcon) {
+        joinRoom({ roomId: appState.currentRoom.id, name: username, icon: userIcon });
+      }
+    }
+    hasConnected = true;
+  });
 
   socket.on('disconnect', () => {});
 

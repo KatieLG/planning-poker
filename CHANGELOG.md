@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-10-18
+
+- Fixed rooms being disbanded when the host is on another tab or their connection drops
+
 ## 2026-07-26
 
 - Add the ability to throw emojis at others
