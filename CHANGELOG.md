@@ -3,6 +3,7 @@
 ## 2026-10-18
 
 - Fixed rooms being disbanded when the host is on another tab or their connection drops
+- Added an undread indicator on the info button when there are new updates
 
 ## 2026-07-26
 

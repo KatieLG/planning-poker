@@ -1,8 +1,7 @@
 <script lang="ts">
   import Info from '$lib/icons/Info.svelte';
   import GitHub from '$lib/icons/GitHub.svelte';
-  import { parseChangelog } from '$lib/changelog';
-  import changelogMarkdown from '../../../CHANGELOG.md?raw';
+  import { changelogEntries } from '$lib/changelog';
 
   interface Props {
     dialog?: HTMLDialogElement;
@@ -11,8 +10,7 @@
   let { dialog = $bindable() }: Props = $props();
 
   const DISPLAY_COUNT = 3;
-  const allEntries = parseChangelog(changelogMarkdown);
-  const displayEntries = allEntries.slice(0, DISPLAY_COUNT);
+  const displayEntries = changelogEntries.slice(0, DISPLAY_COUNT);
 </script>
 
 <dialog bind:this={dialog} class="modal">
