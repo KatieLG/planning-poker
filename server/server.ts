@@ -16,8 +16,6 @@ import {
   scheduleDisband,
   disbandRoom,
   roomExists,
-  rejoinRoom,
-  isRoomDisbanding,
   isVoteUnanimous,
   toggleThrowing,
   isThrowingEnabled,
@@ -107,28 +105,13 @@ io.on('connection', (socket: Socket) => {
         return;
       }
 
-      // Check if room is disbanding (host reconnecting)
-      if (isRoomDisbanding(params.roomId)) {
-        const result = rejoinRoom(
-          socket.id,
-          params.roomId,
-          params.name,
-          params.icon,
-          params.savedUserId
-        );
-        if (!result) {
-          socket.emit(SocketEvent.ROOM_NOT_FOUND, { roomId: params.roomId });
-          return;
-        }
-        const { room, userId } = result;
-        socket.emit(SocketEvent.JOIN_ROOM, { room, userId });
-        socket.join(room.id);
-        updateRoom(room);
-        return;
-      }
-
-      // Normal join
-      const { room, userId } = joinRoom(socket.id, params.roomId, params.name, params.icon);
+      const { room, userId } = joinRoom(
+        socket.id,
+        params.roomId,
+        params.name,
+        params.icon,
+        params.savedUserId
+      );
       socket.emit(SocketEvent.JOIN_ROOM, { room, userId });
       socket.join(room.id);
       updateRoom(room);

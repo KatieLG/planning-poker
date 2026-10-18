@@ -56,21 +56,37 @@ export const joinRoom = (
   socketId: string,
   roomId: string,
   name: string,
-  icon: string
+  icon: string,
+  previousUserId?: string
 ): { room: Room; userId: string } => {
   const room = rooms.get(roomId);
   if (!room) throw new Error('Room not found');
+
+  // If the incoming user was the current host, treat this as the host reconnecting
+  // rather than a brand new participant joining.
+  const isHostReturning = !!previousUserId && previousUserId === room.hostId;
 
   const userId = nanoid();
   const user: User = {
     id: userId,
     name,
     icon,
-    isHost: false
+    isHost: isHostReturning
   };
 
   socketMap.set(socketId, { roomId, userId });
-  room.users.push(user);
+
+  if (isHostReturning) {
+    console.log('host reconnected', socketId);
+    // Drop the old entry for the host just incase it hasn't already been taken out, so they dont show up twice
+    room.users = room.users.filter((u) => u.id !== previousUserId);
+    room.users.unshift(user);
+    room.hostId = userId;
+    cancelDisband(roomId);
+  } else {
+    room.users.push(user);
+  }
+
   return { room, userId };
 };
 
@@ -114,49 +130,8 @@ export const cancelDisband = (roomId: string): void => {
   }
 };
 
-export const isRoomDisbanding = (roomId: string): boolean => {
-  return disbandingRooms.has(roomId);
-};
-
 export const roomExists = (roomId: string): boolean => {
   return rooms.has(roomId);
-};
-
-// Rejoin room during grace period
-export const rejoinRoom = (
-  socketId: string,
-  roomId: string,
-  name: string,
-  icon: string,
-  previousUserId?: string
-): { room: Room; userId: string } | null => {
-  const room = rooms.get(roomId);
-  if (!room) return null;
-
-  // Check if this is the original host reconnecting
-  const isHostReturning = previousUserId === room.hostId;
-
-  const userId = nanoid();
-  const user: User = {
-    id: userId,
-    name,
-    icon,
-    isHost: isHostReturning
-  };
-
-  socketMap.set(socketId, { roomId, userId });
-
-  // If the original host is returning, update hostId and cancel disband
-  if (isHostReturning) {
-    console.log('host reconnected', socketId);
-    room.users.unshift(user);
-    room.hostId = userId;
-    cancelDisband(roomId);
-  } else {
-    room.users.push(user);
-  }
-
-  return { room, userId };
 };
 
 export const userVote = (socketId: string, cardValue: number | null): Room => {
