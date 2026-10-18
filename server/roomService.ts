@@ -6,7 +6,7 @@ const socketMap = new Map<string, RoomUserLink>();
 
 // Track disbanding rooms with grace period for host reconnection
 const disbandingRooms = new Map<string, NodeJS.Timeout>();
-const HOST_RECONNECT_GRACE_PERIOD_MS = 30000; // 30 seconds
+const HOST_RECONNECT_GRACE_PERIOD_MS = 15 * 60 * 1000; // 15 minutes
 
 type RoomContext = {
   room: Room;
@@ -101,6 +101,11 @@ export const scheduleDisband = (roomId: string, onDisband: () => void): void => 
   disbandingRooms.set(roomId, timeout);
 };
 
+export const disbandRoom = (roomId: string): void => {
+  cancelDisband(roomId);
+  rooms.delete(roomId);
+};
+
 export const cancelDisband = (roomId: string): void => {
   const timeout = disbandingRooms.get(roomId);
   if (timeout) {
@@ -140,13 +145,15 @@ export const rejoinRoom = (
   };
 
   socketMap.set(socketId, { roomId, userId });
-  room.users.push(user);
 
   // If the original host is returning, update hostId and cancel disband
   if (isHostReturning) {
     console.log('host reconnected', socketId);
+    room.users.unshift(user);
     room.hostId = userId;
     cancelDisband(roomId);
+  } else {
+    room.users.push(user);
   }
 
   return { room, userId };

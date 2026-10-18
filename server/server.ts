@@ -14,6 +14,7 @@ import {
   revealCards,
   resetRoom,
   scheduleDisband,
+  disbandRoom,
   roomExists,
   rejoinRoom,
   isRoomDisbanding,
@@ -46,6 +47,23 @@ const updateRoom = (room: Room) => {
 
 const handleLeaveRoom = (socket: Socket) => {
   handleEvent(socket, () => {
+    console.log('user leaving', socket.id);
+    const { room, hostDisconnected } = leaveRoom(socket.id);
+    socket.leave(room.id);
+
+    if (hostDisconnected) {
+      // disband immediately if host actively leaves
+      disbandRoom(room.id);
+      io.to(room.id).emit(SocketEvent.DISBAND_ROOM);
+      return;
+    }
+
+    updateRoom(room);
+  });
+};
+
+const handleDisconnect = (socket: Socket) => {
+  handleEvent(socket, () => {
     console.log('user disconnecting', socket.id);
     const { room, hostDisconnected } = leaveRoom(socket.id);
     socket.leave(room.id);
@@ -66,7 +84,7 @@ io.on('connection', (socket: Socket) => {
 
   socket.on(SocketEvent.DISCONNECT, () => {
     console.log('Disconnect event for socket', socket.id);
-    handleLeaveRoom(socket);
+    handleDisconnect(socket);
   });
 
   socket.on(SocketEvent.LEAVE_ROOM, () => {
